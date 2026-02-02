@@ -1,0 +1,32 @@
+services:
+  # -----------------------------
+  # Node.js Backend
+  # -----------------------------
+  - type: web
+    name: studysphere-backend
+    env: node
+    region: singapore
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+
+  # -----------------------------
+  # Python Backend
+  # -----------------------------
+  - type: web
+    name: studysphere-py-backend
+    env: python
+    region: singapore
+    plan: free
+    rootDir: py-backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend.py
+    envVars:
+      - key: PORT
+        value: 10000
