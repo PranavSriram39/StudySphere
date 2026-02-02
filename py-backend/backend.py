@@ -120,5 +120,7 @@ def generate_quiz_from_pdf():
         return jsonify({"error": "Failed to generate quiz. Check server logs."}), 500
 
 if __name__ == "__main__":
-    print("🚀 Server running at [http://127.0.0.1:8080](http://127.0.0.1:8080)")
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    print(f"🚀 Server running on port {port}")
+    app.run(host="0.0.0.0", port=port)
+    
