@@ -37,7 +37,7 @@ const NewQuiz = ({ setCreatePage }) => {
       formData.append("file", file);
 
       const response = await axios.post(
-        "http://127.0.0.1:8080/generate-quiz",
+        "https://studysphere-py-backend.onrender.com/generate-quiz",
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
