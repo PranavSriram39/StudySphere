@@ -1,0 +1,36 @@
+{
+    "id":"49f4a8dbnu4y3s",
+    "title": "Web Development Basics",
+    "questions": [
+      {
+        "id":1,
+        "question": "What does HTML stand for?",
+        "options": ["Hyper Text Markup Language", "Highly Textured Modern Language", "Home Tool Markup Language", "Hyperlink and Text Markup Language"],
+        "correct_answer": "Hyper Text Markup Language"
+      },
+      {
+        "id":2,
+        "question": "Which CSS property is used to control the spacing between elements?",
+        "options": ["margin", "padding", "border", "spacing"],
+        "correct_answer": "margin"
+      },
+      {
+        "id":3,
+        "question": "What does CSS stand for?",
+        "options": ["Counter Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Cascading Style Sheets"],
+        "correct_answer": "Cascading Style Sheets"
+      },
+      {
+        "id":4,
+        "question": "Which programming language is commonly used for client-side scripting in web development?",
+        "options": ["Java", "Python", "JavaScript", "Ruby"],
+        "correct_answer": "JavaScript"
+      },
+      {
+        "id":5,
+        "question": "What does API stand for?",
+        "options": ["Advanced Programming Interface", "Application Programming Interface", "Automated Programming Interface", "Application Process Integration"],
+        "correct_answer": "Application Programming Interface"
+      }
+    ]
+}

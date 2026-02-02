@@ -1,0 +1,221 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
+body {
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  height: 6px;
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px #e2e8f0;
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 16px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #c0c4c9;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  /* Safari and Chrome */
+}
+
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none !important;
+  /* Firefox */
+}
+
+.gradient-transition {
+  background-image: linear-gradient(to right, #4983f6, #a578f7, #3eb2ffda);
+  background-size: 200% 100%;
+  transition: background-position 0.5s;
+}
+
+.gradient-text {
+  background: linear-gradient(to right, #4983f6, #a578f7);
+}
+
+.gradient-transition:hover {
+  background-position: 100% 0;
+}
+
+.body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* input  */
+.input-group {
+  position: relative;
+}
+
+.input {
+  padding: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  border-bottom: 1px solid #c0c0c0;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: transparent;
+}
+
+.placeholder {
+  position: absolute;
+  top: 12px;
+  left: 15px;
+  color: #808080;
+  font-size: 14px;
+  padding: 0px 5px;
+  transition: 0.3s;
+  pointer-events: none;
+}
+
+.input:focus ~ .placeholder,
+.input:valid ~ .placeholder {
+  top: -12px;
+  left: 0px;
+  font-size: 12px;
+  color: gray;
+  /* background: #fff; */
+}
+
+video {
+  object-fit: cover;
+  border-radius: 2%;
+  border: 1px solid black;
+}
+.screen video {
+  object-fit: fill;
+}
+
+/* loader */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 5px solid #000;
+  animation: l20-1 0.8s infinite linear alternate, l20-2 1.6s infinite linear;
+}
+
+/* loader 2 */
+.loader {
+  width: 50px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 5px solid #3b82f6;
+  animation: l20-1 0.8s infinite linear alternate, l20-2 1.6s infinite linear;
+}
+
+@keyframes l20-1 {
+  0% {
+    clip-path: polygon(50% 50%, 0 0, 50% 0%, 50% 0%, 50% 0%, 50% 0%, 50% 0%);
+  }
+
+  12.5% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      50% 0%,
+      100% 0%,
+      100% 0%,
+      100% 0%,
+      100% 0%
+    );
+  }
+
+  25% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      50% 0%,
+      100% 0%,
+      100% 100%,
+      100% 100%,
+      100% 100%
+    );
+  }
+
+  50% {
+    clip-path: polygon(
+      50% 50%,
+      0 0,
+      50% 0%,
+      100% 0%,
+      100% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+
+  62.5% {
+    clip-path: polygon(
+      50% 50%,
+      100% 0,
+      100% 0%,
+      100% 0%,
+      100% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+
+  75% {
+    clip-path: polygon(
+      50% 50%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+
+  100% {
+    clip-path: polygon(
+      50% 50%,
+      50% 100%,
+      50% 100%,
+      50% 100%,
+      50% 100%,
+      50% 100%,
+      0% 100%
+    );
+  }
+}
+
+@keyframes l20-2 {
+  0% {
+    transform: scaleY(1) rotate(0deg);
+  }
+
+  49.99% {
+    transform: scaleY(1) rotate(135deg);
+  }
+
+  50% {
+    transform: scaleY(-1) rotate(0deg);
+  }
+
+  100% {
+    transform: scaleY(-1) rotate(-135deg);
+  }
+}

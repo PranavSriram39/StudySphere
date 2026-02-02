@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "name": "study-nex",
+    "builds": [
+       { "src": "server.js", "use": "@vercel/node" }
+    ],
+    "routes": [
+       { "src": "/(.*)", "dest": "/server.js" }
+    ]
+ }

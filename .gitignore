@@ -1,0 +1,69 @@
+# =========================
+# OS / Editor junk
+# =========================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+.vscode/
+.idea/
+
+# =========================
+# ENV files (IMPORTANT)
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# FRONTEND (React / Next / Vite)
+# =========================
+frontend/node_modules/
+frontend/.next/
+frontend/dist/
+frontend/build/
+frontend/.cache/
+frontend/npm-debug.log*
+frontend/yarn-error.log*
+
+# =========================
+# BACKEND (Node / Express)
+# =========================
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/npm-debug.log*
+backend/yarn-error.log*
+
+# =========================
+# PY-BACKEND (Python / Flask / Django)
+# =========================
+py-backend/__pycache__/
+py-backend/*.pyc
+py-backend/*.pyo
+py-backend/*.pyd
+py-backend/.Python
+py-backend/venv/
+py-backend/.venv/
+py-backend/env/
+py-backend/.env/
+py-backend/.pytest_cache/
+py-backend/.mypy_cache/
+
+# =========================
+# DATABASE / RUNTIME FILES
+# =========================
+*.sqlite3
+*.db
+
+# =========================
+# COVERAGE / TEST OUTPUT
+# =========================
+coverage/
+htmlcov/
+
+# =========================
+# BUILD / TEMP
+# =========================
+*.zip
+*.tar.gz
