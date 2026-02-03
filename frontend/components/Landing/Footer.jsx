@@ -18,7 +18,7 @@ const Footer = () => {
       <p className="text-orange-200 md:text-xl font-semibold">
         Made by students for the students
       </p>
-      <p className="text-white">&copy; 2025 {MainLabel} Inc.</p>
+      <p className="text-white">&copy; 2026 {MainLabel} Inc.</p>
     </div>
   );
 };
