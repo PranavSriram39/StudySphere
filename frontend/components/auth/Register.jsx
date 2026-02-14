@@ -73,8 +73,8 @@ const RegisterComponent = () => {
       const data = new FormData();
       data.append("file", file);
       data.append("upload_preset", "study-nex");
-      data.append("cloud_name", "dgu3ljso6");
-      fetch("https://api.cloudinary.com/v1_1/dgu3ljso6/image/upload", {
+      data.append("cloud_name", "doiv24r1h");
+      fetch("https://api.cloudinary.com/v1_1/doiv24r1h/image/upload", {
         method: "post",
         body: data,
       })
