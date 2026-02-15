@@ -14,30 +14,57 @@ const MediaPopup = ({
   setFileType,
 }) => {
   const uploadDocument = (file) => {
-    if (file === undefined) {
-      toast.error("Invalid Image!");
+    if (!file) {
+      toast.error("Please select a file!");
       return;
-    } else {
-      setFilePreview(URL.createObjectURL(file));
-      const data = new FormData();
-      data.append("file", file);
-      data.append("upload_preset", "study-nex");
-      data.append("cloud_name", "doiv24r1h");
-      fetch("https://api.cloudinary.com/v1_1/doiv24r1h/auto/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          setMediaPicker(false);
-          if (res?.format === "pdf") setFileType("document");
-          else setFileType(res?.resource_type?.toString());
-          setFileContent(res?.secure_url?.toString());
-        })
-        .catch((err) => {
-          console.error(err);
-        });
     }
+    
+    // Validate file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024;
+    if (file.size > maxSize) {
+      toast.error("File size exceeds 50MB limit!");
+      return;
+    }
+
+    // Show preview
+    const preview = URL.createObjectURL(file);
+    setFilePreview(preview);
+
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "study-nex");
+    data.append("cloud_name", "doiv24r1h");
+
+    fetch("https://api.cloudinary.com/v1_1/doiv24r1h/auto/upload", {
+      method: "POST",
+      body: data,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`Upload failed with status ${res.status}`);
+        return res.json();
+      })
+      .then((res) => {
+        if (res?.secure_url) {
+          setMediaPicker(false);
+          if (res?.format === "pdf") {
+            setFileType("document");
+          } else if (res?.resource_type) {
+            setFileType(res.resource_type);
+          } else {
+            setFileType("file");
+          }
+          setFileContent(res.secure_url);
+          toast.success("File uploaded successfully!");
+        } else {
+          throw new Error("No secure URL received from upload");
+        }
+      })
+      .catch((err) => {
+        console.error("Upload error:", err);
+        toast.error(err.message || "Failed to upload file. Please try again.");
+        // Cleanup preview on error
+        setFilePreview(null);
+      });
   };
   return (
     !filePreview && (

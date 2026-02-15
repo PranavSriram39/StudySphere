@@ -3,6 +3,7 @@ import { getRequest } from "@/config/axiosInterceptor";
 import { getCookie } from "cookies-next";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getSafeStorage } from "@/lib/safeStorage";
 
 export const userDetailsStore = create(
   persist(
@@ -27,7 +28,7 @@ export const userDetailsStore = create(
     }),
     {
       name: "user",
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => getSafeStorage()),
     }
   )
 );

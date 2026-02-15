@@ -49,7 +49,10 @@ const Progressbar = () => {
   useEffect(() => {
     return () => {
       if (chartRef.current) {
-        chartRef?.current?.chartInstance?.destroy();
+        const current = chartRef.current;
+        if (current?.chartInstance) {
+          current.chartInstance.destroy();
+        }
       }
     };
   }, []);

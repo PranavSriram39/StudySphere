@@ -25,7 +25,7 @@ const CreateChannel = ({ orgDetails, setPopup, channelsData }) => {
 
   useEffect(() => {
     setValue("org_id", orgDetails._id);
-  }, [orgDetails]);
+  }, [orgDetails, setValue]);
 
   const handleChannelCreation = async (data) => {
     setOrgActiveChannel(data.name);

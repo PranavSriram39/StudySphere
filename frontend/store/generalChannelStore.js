@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import { getSafeStorage } from "@/lib/safeStorage";
 
 export const generalChannelStore = create(
   persist(
@@ -9,7 +10,7 @@ export const generalChannelStore = create(
     }),
     {
       name: "generalChannel",
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => getSafeStorage()),
     }
   )
 );

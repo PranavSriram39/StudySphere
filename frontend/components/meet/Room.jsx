@@ -168,7 +168,7 @@ const Room = () => {
       });
       peerInstance.destroy();
     };
-  }, []);
+  }, [myPeer, roomId, userDetails]);
 
   useEffect(() => {
     const handleToggleAudio = (userId) => {
@@ -213,13 +213,14 @@ const Room = () => {
       socket.off("user-send-message", handleMessageEvent);
       socket.off("user-leave", handleUserLeave);
     };
-  }, []);
+  }, [users, setPlayers]);
 
   useEffect(() => {
-    setTimeout(() => {
-      setTime(time + 1);
+    const timer = setTimeout(() => {
+      setTime((prevTime) => prevTime + 1);
     }, 1000);
-  }, [time]);
+    return () => clearTimeout(timer);
+  }, []);
 
   const toTime = (seconds) => {
     var date = new Date(null);

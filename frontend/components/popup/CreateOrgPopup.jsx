@@ -125,13 +125,15 @@ const CreateOrgPopup = ({ setPopup }) => {
               htmlFor="image"
             >
               {image ? (
-                <img
+                <Image
                   src={image}
-                  alt=""
+                  alt="Organization logo"
+                  width={96}
+                  height={96}
                   className="w-24 h-24 cursor-pointer rounded-full object-cover"
                 />
               ) : (
-                <Image src={Upload} alt="" className="cursor-pointer" />
+                <Image src={Upload} alt="Upload icon" className="cursor-pointer" />
               )}
               <input
                 id="image"

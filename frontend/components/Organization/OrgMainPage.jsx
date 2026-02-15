@@ -28,7 +28,7 @@ const OrgMainPage = () => {
         window.removeEventListener("popstate", handlePopState);
       };
     }
-  }, []);
+  }, [isMobile, setActiveMobile]);
 
   useEffect(() => {
     if (showChannelProfile) {
