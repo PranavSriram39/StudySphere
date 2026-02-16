@@ -21,9 +21,9 @@ const MediaPopup = ({
       setFilePreview(URL.createObjectURL(file));
       const data = new FormData();
       data.append("file", file);
-      data.append("upload_preset", "study-sphere");
-      data.append("cloud_name", "doiv24r1h");
-      fetch("https://api.cloudinary.com/v1_1/doiv24r1h/auto/upload", {
+      data.append("upload_preset", "study-nex");
+      data.append("cloud_name", "dgu3ljso6");
+      fetch("https://api.cloudinary.com/v1_1/dgu3ljso6/auto/upload", {
         method: "post",
         body: data,
       })
