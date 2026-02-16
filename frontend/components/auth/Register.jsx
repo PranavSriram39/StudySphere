@@ -1,4 +1,4 @@
-
+"use client";
 import React, { useRef, useState } from "react";
 import { BsEmojiSmile } from "react-icons/bs";
 import { HiOutlineMicrophone } from "react-icons/hi";

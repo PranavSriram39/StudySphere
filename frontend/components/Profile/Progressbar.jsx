@@ -1,4 +1,4 @@
-
+"use client";
 
 import { BarElement, Legend, LinearScale, Title, Tooltip } from "chart.js";
 import { Chart as ChartJS } from "chart.js/auto";

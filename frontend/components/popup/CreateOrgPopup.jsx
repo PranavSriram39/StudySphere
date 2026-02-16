@@ -1,5 +1,4 @@
-
-
+"use client";
 import React, { useState } from "react";
 import PopupContainer from "../Layouts/PopupContainer";
 import Title from "../Helpers/Title";
