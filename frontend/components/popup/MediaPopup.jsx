@@ -15,29 +15,50 @@ const MediaPopup = ({
 }) => {
   const uploadDocument = (file) => {
     if (file === undefined) {
-      toast.error("Invalid Image!");
+      toast.error("Invalid file!");
       return;
-    } else {
-      setFilePreview(URL.createObjectURL(file));
-      const data = new FormData();
-      data.append("file", file);
-      data.append("upload_preset", "study-sphere");
-      data.append("cloud_name", "doiv24r1h");
-      fetch("https://api.cloudinary.com/v1_1/doiv24r1h/auto/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          setMediaPicker(false);
-          if (res?.format === "pdf") setFileType("document");
-          else setFileType(res?.resource_type?.toString());
-          setFileContent(res?.secure_url?.toString());
-        })
-        .catch((err) => {
-          console.error(err);
-        });
     }
+
+    // Determine upload endpoint based on file type
+    let uploadEndpoint = "image/upload"; // default
+    
+    if (file.type === "application/pdf" || file.name.endsWith(".pdf")) {
+      uploadEndpoint = "raw/upload";
+    } else if (file.type.startsWith("image/")) {
+      uploadEndpoint = "image/upload";
+    } else if (file.type.startsWith("video/")) {
+      uploadEndpoint = "video/upload";
+    } else {
+      toast.error("Unsupported file type!");
+      return;
+    }
+
+    setFilePreview(URL.createObjectURL(file));
+    const data = new FormData();
+    data.append("file", file);
+    data.append("upload_preset", "study-sphere");
+    
+    fetch(`https://api.cloudinary.com/v1_1/doiv24r1h/${uploadEndpoint}`, {
+      method: "post",
+      body: data,
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res?.error) {
+          toast.error(res.error.message || "Upload failed!");
+          setFilePreview(null);
+          return;
+        }
+        setMediaPicker(false);
+        if (res?.format === "pdf") setFileType("document");
+        else setFileType(res?.resource_type?.toString());
+        setFileContent(res?.secure_url?.toString());
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Upload failed. Please try again.");
+        setFilePreview(null);
+      });
   };
   return (
     !filePreview && (
