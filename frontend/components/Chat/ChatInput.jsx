@@ -46,22 +46,25 @@ const ChatInput = ({ setMessages }) => {
   };
   const sendMsg = async () => {
     let contentType;
-    setMessageContent("");
-    setFileContent("");
-    setFileType("");
+    const messageText = messageContent;
+    const attachmentUrl = fileContent;
+    const fileMediaType = returnMediaType();
 
-    if (messageContent && fileContent) contentType = "Hybrid";
-    else if (messageContent) contentType = "Text";
-    else if (fileContent) contentType = "Media";
-    else return;
+    if (messageText && attachmentUrl) contentType = "Hybrid";
+    else if (messageText) contentType = "Text";
+    else if (attachmentUrl) contentType = "Media";
+    else {
+      toast.error("Please enter a message or select a file!");
+      return;
+    }
 
     const body = {
       type: contentType,
       receiver: channelDetails?.users,
-      content: messageContent,
-      attachments: fileContent,
+      content: messageText,
+      attachments: attachmentUrl,
       channel: channelDetails?._id,
-      mediaType: returnMediaType(),
+      mediaType: fileMediaType,
     };
     try {
       const response = await postRequest({
@@ -74,6 +77,10 @@ const ChatInput = ({ setMessages }) => {
         setMessages((prev) => [...prev, data]);
         socket.emit("new_message", data, channelDetails?._id);
         setFilePreview(null);
+        setMessageContent("");
+        setFileContent("");
+        setFileType("");
+        toast.success("Message sent!");
       }
     } catch (error) {
       console.log(error);
@@ -116,12 +123,24 @@ const ChatInput = ({ setMessages }) => {
           ) : fileType === "video" ? (
             <Player fluid={false} src={filePreview} aspectRatio="3:2" />
           ) : fileType === "document" ? (
-            <iframe
-              className="bg-transparent focus:outline-none text-gray-500 rounded-xl shadow-2xl"
-              src={`${filePreview}#page=1&w=200&h=300`}
-              width={400}
-              height={400}
-            />
+            <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+              <iframe
+                className="bg-white focus:outline-none rounded-xl shadow-2xl"
+                src={filePreview}
+                width={500}
+                height={600}
+                allowFullScreen
+                title="Document Preview"
+              />
+              <a 
+                href={filePreview}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white text-sm bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
+              >
+                Open in New Tab
+              </a>
+            </div>
           ) : null}
         </motion.div>
       )}

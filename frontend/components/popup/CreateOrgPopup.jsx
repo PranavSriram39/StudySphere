@@ -44,7 +44,7 @@ const CreateOrgPopup = ({ setPopup }) => {
       setImage(URL.createObjectURL(file));
       const data = new FormData();
       data.append("file", file);
-      data.append("upload_preset", "study-nex");
+      data.append("upload_preset", "study-sphere");
       data.append("cloud_name", "doiv24r1h");
       fetch("https://api.cloudinary.com/v1_1/doiv24r1h/image/upload", {
         method: "post",
@@ -125,15 +125,13 @@ const CreateOrgPopup = ({ setPopup }) => {
               htmlFor="image"
             >
               {image ? (
-                <Image
+                <img
                   src={image}
-                  alt="Organization logo"
-                  width={96}
-                  height={96}
+                  alt=""
                   className="w-24 h-24 cursor-pointer rounded-full object-cover"
                 />
               ) : (
-                <Image src={Upload} alt="Upload icon" className="cursor-pointer" />
+                <Image src={Upload} alt="" className="cursor-pointer" />
               )}
               <input
                 id="image"
