@@ -177,16 +177,30 @@ Navigate to `http://localhost:3000` to interact with the platform.
 
 ---
 
-## 🖼 Screenshots & Placeholders
+## 🖼 Screenshots & Interface
 
-* **Dashboard Landing Panel**
-  ![Dashboard Landing Placeholder](https://placehold.co/800x450/1e293b/ffffff?text=StudySphere+Dashboard+View)
-  
-* **Real-time Channel Classroom Meeting & Shared Whiteboard Canvas**
-  ![Collaboration Screen Placeholder](https://placehold.co/800x450/1e293b/ffffff?text=Video+Meetings+%26+Interactive+Whiteboard)
+Here is a visual tour of the StudySphere user interface and core features:
 
-* **AI Quiz Editor & Performance Analytics Chart**
-  ![Quiz Panel Placeholder](https://placehold.co/800x450/1e293b/ffffff?text=AI+Quiz+Generator+%26+Leaderboard+Charts)
+### 🏠 Dashboard & Welcome View
+![Dashboard Landing View](IMAGES/home.png)
+
+### 🏫 Organization & Workspace Directory
+![Organization View](IMAGES/org.png)
+
+### 💬 Active Video Meeting Classroom
+![Video Meeting Session](IMAGES/meet.png)
+
+### 🖥️ Direct Peer-to-Peer Screen Sharing
+![Screen Sharing View](IMAGES/screensharing.png)
+
+### 🏆 Gamified Leaderboard Standings
+![Leaderboard View](IMAGES/leaderboard.png)
+
+### 👤 Student Profile & Streak Tracker
+![User Profile View](IMAGES/userprofile.png)
+
+### ℹ️ Platform Information Dashboard
+![About Panel View](IMAGES/about.png)
 
 ---
 
