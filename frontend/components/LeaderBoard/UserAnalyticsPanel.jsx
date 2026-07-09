@@ -88,7 +88,7 @@ const UserAnalyticsPanel = ({ userId, onClose, orgId }) => {
   };
 
   // Render loading skeleton
-  if (isLoading || !data) {
+  if (isLoading) {
     if (!mounted) return null;
     return createPortal(
       <div className="fixed inset-0 z-[100] flex justify-end bg-black/40 backdrop-blur-[2px]">
@@ -111,6 +111,31 @@ const UserAnalyticsPanel = ({ userId, onClose, orgId }) => {
           </div>
           <div className="h-[200px] bg-slate-800 rounded-xl" />
           <div className="h-[150px] bg-slate-850 rounded-xl" />
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
+  if (!data) {
+    if (!mounted) return null;
+    return createPortal(
+      <div 
+        className="fixed inset-0 z-[100] flex justify-end bg-black/60 backdrop-blur-sm"
+        onClick={handleBackdropClick}
+      >
+        <div ref={panelRef} className="w-full sm:w-[50%] lg:w-[38%] xl:w-[35%] h-screen bg-slate-950 border-l border-slate-800 shadow-2xl p-6 flex flex-col items-center justify-center gap-4 text-center">
+          <div className="w-16 h-16 bg-rose-950/50 rounded-full flex items-center justify-center text-rose-500 mb-2">
+            <X size={32} />
+          </div>
+          <h3 className="text-xl font-bold text-slate-200">Unable to Load Profile</h3>
+          <p className="text-sm text-slate-400 max-w-xs">There was an error retrieving the analytics data for this user. Please try again later.</p>
+          <button 
+            onClick={onClose}
+            className="mt-4 px-6 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg transition"
+          >
+            Close
+          </button>
         </div>
       </div>,
       document.body

@@ -36,7 +36,7 @@ const ParentContainer = ({ children, orgData, channelsData }) => {
   }, [orgData, channelsData]);
 
   return (
-    <div className="grid lg:grid-cols-[280px,1fr] mx-auto bg-main overflow-hidden">
+    <div className="grid lg:grid-cols-[280px,1fr] mx-auto bg-main overflow-hidden h-screen">
       <SideBar
         channelsData={channelsData}
         setPopup={setPopup}

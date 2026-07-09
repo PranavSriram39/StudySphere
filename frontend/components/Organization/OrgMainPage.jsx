@@ -43,7 +43,7 @@ const OrgMainPage = () => {
     <div
       className={classNames(
         show,
-        `flex-1  md:flex flex-col transition h-screen`
+        `flex-1 md:flex flex-col transition h-screen overflow-hidden`
       )}
     >
       {orgActiveChannel === "Assessments" ? (

@@ -619,7 +619,7 @@ const LeaderBoardSection = () => {
   };
 
   return (
-    <div className="bg-slate-900 min-h-screen text-slate-100 p-4 md:p-8">
+    <div className="bg-slate-900 h-full overflow-y-auto text-slate-100 p-4 md:p-8">
       
       {/* Top Header Card */}
       <div className="flex flex-wrap justify-between items-center gap-4 bg-gradient-to-r from-slate-800 via-slate-850 to-slate-800 border border-slate-700 rounded-2xl p-6 mb-8 shadow-xl">

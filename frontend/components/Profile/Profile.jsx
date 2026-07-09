@@ -54,7 +54,15 @@ const Profile = () => {
 
   useEffect(() => {
     setMounted(true);
+    // Restore active tab from sessionStorage on mount (survives F5 refresh)
+    const savedTab = sessionStorage.getItem("ss-profile-active-tab");
+    if (savedTab) setActive(savedTab);
   }, []);
+
+  // Persist tab selection across page refreshes
+  useEffect(() => {
+    sessionStorage.setItem("ss-profile-active-tab", active);
+  }, [active]);
 
   const fetchProfileAllData = async () => {
     try {
@@ -242,7 +250,7 @@ const Profile = () => {
   // Error / Retry State if load fails
   if (!isLoading && !profileData) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 space-y-4 max-w-md mx-auto text-center min-h-[50vh] text-slate-200">
+      <div className="h-full overflow-y-auto flex flex-col items-center justify-center p-8 space-y-4 max-w-md mx-auto text-center text-slate-200">
         <div className="text-rose-500 font-black text-lg">Failed to Load Profile</div>
         <p className="text-xs text-slate-450">
           We couldn&apos;t retrieve your profile data from the server. Please check your connection and retry.
@@ -260,21 +268,23 @@ const Profile = () => {
   // Skeleton UI
   if (isLoading || !profileData) {
     return (
-      <div className="flex flex-col animate-pulse px-6 py-8 space-y-8 max-w-7xl mx-auto w-full">
-        <div className="h-44 bg-slate-800 rounded-2xl flex items-end p-6 gap-6">
-          <div className="w-28 h-28 rounded-full bg-slate-700 border-4 border-slate-900" />
-          <div className="space-y-3 pb-2">
-            <div className="h-6 w-48 bg-slate-700 rounded" />
-            <div className="h-4 w-32 bg-slate-700 rounded" />
+      <div className="h-full overflow-y-auto">
+        <div className="flex flex-col animate-pulse px-6 py-8 space-y-8 max-w-7xl mx-auto w-full">
+          <div className="h-44 bg-slate-800 rounded-2xl flex items-end p-6 gap-6">
+            <div className="w-28 h-28 rounded-full bg-slate-700 border-4 border-slate-900" />
+            <div className="space-y-3 pb-2">
+              <div className="h-6 w-48 bg-slate-700 rounded" />
+              <div className="h-4 w-32 bg-slate-700 rounded" />
+            </div>
           </div>
-        </div>
-        <div className="flex flex-col lg:flex-row gap-8">
-          <div className="w-full lg:w-60 space-y-3">
-            {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-12 bg-slate-800 rounded-lg" />
-            ))}
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="w-full lg:w-60 space-y-3">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="h-12 bg-slate-800 rounded-lg" />
+              ))}
+            </div>
+            <div className="flex-1 h-96 bg-slate-800 rounded-2xl" />
           </div>
-          <div className="flex-1 h-96 bg-slate-800 rounded-2xl" />
         </div>
       </div>
     );
@@ -283,6 +293,7 @@ const Profile = () => {
   const { user, organization, channels, leaderboard, roleData } = profileData;
 
   return (
+    <div className="h-full overflow-y-auto">
     <div className="flex flex-col max-w-7xl mx-auto w-full px-4 lg:px-8 py-6">
       
       {/* Profile Cover Header */}
@@ -595,7 +606,7 @@ const Profile = () => {
           </div>
         )}
       </AnimatePresence>
-
+    </div>
     </div>
   );
 };

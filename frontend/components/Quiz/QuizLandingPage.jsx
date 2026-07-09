@@ -28,6 +28,21 @@ const QuizLandingPage = ({ quiz, quizData }) => {
     }))
   );
 
+  useEffect(() => {
+    if (questionsList.length > 0 && newQuiz.length === 0) {
+      setNewQuiz(
+        questionsList.map((question) => ({
+          ...question,
+          userAnswer: null,
+          flagged: false,
+          visited: false,
+        }))
+      );
+      setTimeLeft((quiz?.duration || questionsList.length || 10) * 60);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [questionsList]);
+
   // Keep newQuiz in a ref for safe use in async/timer functions without re-triggering intervals
   const newQuizRef = useRef(newQuiz);
   useEffect(() => {
@@ -48,6 +63,7 @@ const QuizLandingPage = ({ quiz, quizData }) => {
   const params = useParams();
   const router = useRouter();
   const setOrgActiveChannel = activeOrgChannel((state) => state.setOrgChannel);
+  const userDetails = userDetailsStore((state) => state.userDetails);
 
   // ✅ Safe access to window & URL params
   useEffect(() => {
@@ -166,6 +182,7 @@ const QuizLandingPage = ({ quiz, quizData }) => {
     checkStatus();
     const interval = setInterval(checkStatus, 1000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quizData?.startDateTime, quizData?.endDateTime]);
 
   // Timer countdown
@@ -181,6 +198,7 @@ const QuizLandingPage = ({ quiz, quizData }) => {
       setTimeLeft((prev) => prev - 1);
     }, 1000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, hasStarted]);
 
   // Keyboard Shortcuts (Arrow keys)
@@ -197,6 +215,7 @@ const QuizLandingPage = ({ quiz, quizData }) => {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestionIndex, newQuiz.length]);
 
   if (!urlParams || newQuiz.length === 0) return null;

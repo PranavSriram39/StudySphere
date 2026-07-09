@@ -442,11 +442,7 @@ const getUserAnalytics = asyncHandler(async (req, res) => {
   try {
     const { userId } = req.params;
     const orgId = req.query.org_id || req.headers["org-id"];
-    
-    // Ensure user can only view their own analytics (Issue 7)
-    if (userId !== req.user._id.toString()) {
-      return errorResponse({ res, message: "Unauthorized: You can only view your own detailed analytics dashboard." });
-    }
+
 
     const user = await User.findById(userId, "name username email image currentStreak longestStreak badges createdAt org_joined");
     if (!user) {

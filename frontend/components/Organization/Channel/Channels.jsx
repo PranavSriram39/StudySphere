@@ -5,6 +5,7 @@ import { generalChannelStore } from "@/store/generalChannelStore";
 import { loadChannelData } from "@/lib/ChannelApi";
 import { channelStore } from "@/store/channelStore";
 import { activeOrgChannel } from "@/store/activeOrgChannel";
+import { isMobile } from "react-device-detect";
 
 export const OrgChannels = ({ data, index, setActiveMobile }) => {
   const Icon = data.icon;
@@ -14,14 +15,13 @@ export const OrgChannels = ({ data, index, setActiveMobile }) => {
   const setOrgActiveChannel = activeOrgChannel((state) => state.setOrgChannel);
 
   const handleChannelClick = async (channel) => {
-    window.history.pushState("#", null, null);
+    // Only push synthetic history on mobile — desktop Back must navigate to real previous URL
+    if (isMobile) window.history.pushState("#", null, null);
     setActiveMobile(true);
     if (channel === "General") {
       const channelData = await loadChannelData(generalChannel?._id);
       setChannelDetails(channelData ? channelData : null);
     }
-    window.history.pushState("#", null, null);
-    setActiveMobile(true);
     setOrgActiveChannel(channel);
   };
   return (
@@ -59,7 +59,8 @@ export const UserChannels = ({ data, index, setActiveMobile }) => {
     setOrgActiveChannel(data.name);
     const channelData = await loadChannelData(data?._id);
     setChannelDetails(channelData ? channelData : null);
-    window.history.pushState("#", null, null);
+    // Only push synthetic history on mobile — desktop Back must navigate to real previous URL
+    if (isMobile) window.history.pushState("#", null, null);
     setActiveMobile(true);
   };
 

@@ -11,7 +11,7 @@ const profile = () => {
     redirect("/login");
   }
   return (
-    <div className="overflow-y-hidden">
+    <div className="h-screen overflow-hidden bg-slate-950">
       <Profile />
     </div>
   );
