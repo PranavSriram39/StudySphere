@@ -26,14 +26,7 @@ services:
     plan: free
     rootDir: py-backend
     buildCommand: pip install -r requirements.txt
-    # Use gunicorn for production (NOT the Flask dev server).
-    # --timeout 120  allows up to 2 min for Groq API calls.
-    # --workers 1    keeps memory low on the free tier.
-    startCommand: gunicorn backend:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    startCommand: python backend.py
     envVars:
       - key: PORT
         value: 10000
-      # IMPORTANT: Set Groq_API_KEY in the Render Dashboard > Environment tab.
-      # Do NOT commit the actual key here. Add it manually in the dashboard.
-      - key: Groq_API_KEY
-        sync: false

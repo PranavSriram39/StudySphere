@@ -189,7 +189,7 @@ const getProgressReport = async (req, res) => {
         quizQuery.org_id = orgDoc._id;
       }
     }
-    if (channel_id && mongoose.isValidObjectId(channel_id)) {
+    if (channel_id) {
       quizQuery.channel_id = channel_id;
     }
     if (topic) {
@@ -393,7 +393,7 @@ const getLeaderboardAnalytics = async (req, res) => {
         quizQuery.org_id = orgDoc._id;
       }
     }
-    if (channel_id && mongoose.isValidObjectId(channel_id)) {
+    if (channel_id) {
       quizQuery.channel_id = channel_id;
     }
     if (topic) {
@@ -448,7 +448,7 @@ const getLeaderboardAnalytics = async (req, res) => {
         orgRankVal = myStanding.rank;
       }
 
-      if (channel_id && mongoose.isValidObjectId(channel_id)) {
+      if (channel_id) {
         const Channel = require("../models/channelModel");
         const chDoc = await Channel.findById(channel_id);
         if (chDoc) {

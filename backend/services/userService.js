@@ -105,7 +105,7 @@ const sendPasswordMail = (name, email, token) => {
       subject: "For Reset Password",
       html: `<p>Hi ${name}, Please copy the link <a href="${
         process.env.APP_ENV === "production"
-          ? "https://study-nex.vercel.app"
+          ? "https://studysphere39.vercel.app"
           : "http://localhost:3000"
       }/reset-password/${token}">and reset your password.</a></p>`,
     };

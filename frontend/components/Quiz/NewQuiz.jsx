@@ -8,7 +8,7 @@ import Quiz from "./Quiz";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { postRequest } from "@/config/axiosInterceptor";
-import { createNewQuizApi } from "../Constants/apiEndpoints";
+import { createNewQuizApi, ApiUrl } from "../Constants/apiEndpoints";
 import { getCookie } from "cookies-next";
 
 const NewQuiz = ({ setCreatePage }) => {
@@ -50,19 +50,6 @@ const NewQuiz = ({ setCreatePage }) => {
       return;
     }
 
-    // Validate PDF MIME type
-    if (file.type !== "application/pdf") {
-      toast.error("Only PDF files are supported");
-      return;
-    }
-
-    // Validate max file size: 10 MB
-    const MAX_SIZE_BYTES = 10 * 1024 * 1024;
-    if (file.size > MAX_SIZE_BYTES) {
-      toast.error("File too large. Maximum allowed size is 10 MB");
-      return;
-    }
-
     try {
       setLoading(true);
 
@@ -73,33 +60,27 @@ const NewQuiz = ({ setCreatePage }) => {
       formData.append("difficulty", difficulty);
       formData.append("duration", duration.toString());
 
-      const pyBackendUrl =
-        process.env.NEXT_PUBLIC_APP_ENV === "production"
-          ? "https://studysphere-py-backend.onrender.com/generate-quiz"
-          : "http://localhost:10000/generate-quiz";
+      const response = await axios.post(
+        `${ApiUrl}/generate-quiz`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getCookie("token")}`,
+          },
+        }
+      );
 
-      // ✅ Do NOT set Content-Type manually — Axios will set multipart/form-data
-      // with the correct boundary automatically when given a FormData object.
-      // Manually setting "Content-Type: multipart/form-data" strips the boundary
-      // parameter, causing Flask to fail to parse the uploaded file (400 error).
-      const response = await axios.post(pyBackendUrl, formData, {
-        timeout: 120000, // 2 minutes — Groq generation can be slow
-      });
-
-      if (!response.data?.quiz) {
-        throw new Error("Server returned success but no quiz data found");
+      if (response.data?.success) {
+        setQuiz(response.data.quiz);
+      } else {
+        throw new Error(response.data?.message || "Failed to generate quiz");
       }
 
-      setQuiz(response.data.quiz);
-
     } catch (error) {
-      console.error("[generateQuiz] Error:", error);
-      const serverMsg =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        error?.message ||
-        "Quiz generation failed. Please try again.";
-      toast.error(serverMsg);
+      console.error(error);
+      const errMsg = error?.response?.data?.message || error?.response?.data?.details || error.message || "Failed to generate quiz.";
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }

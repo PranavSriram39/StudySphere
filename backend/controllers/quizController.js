@@ -236,6 +236,100 @@ const stopQuiz = asyncHandler(async (req, res) => {
   }
 });
 
+const generateQuizAI = asyncHandler(async (req, res) => {
+  const requestId = req.id || Math.random().toString(36).substring(7);
+  
+  if (!req.file) {
+    return res.status(400).send({
+      success: false,
+      message: "No PDF uploaded",
+      errorCode: "NO_FILE",
+      details: "Please select a valid PDF file to upload.",
+      timestamp: new Date().toISOString(),
+      requestId
+    });
+  }
+
+  const isPdf = req.file.mimetype === "application/pdf" || req.file.originalname.toLowerCase().endsWith(".pdf");
+  if (!isPdf) {
+    return res.status(400).send({
+      success: false,
+      message: "Invalid PDF format",
+      errorCode: "INVALID_FORMAT",
+      details: "Uploaded file must be a PDF.",
+      timestamp: new Date().toISOString(),
+      requestId
+    });
+  }
+
+  try {
+    const FormData = require("form-data");
+    const axios = require("axios");
+
+    const form = new FormData();
+    form.append("file", req.file.buffer, {
+      filename: req.file.originalname,
+      contentType: req.file.mimetype,
+    });
+    form.append("title", req.body.title || "Quiz");
+    form.append("num_questions", req.body.num_questions || "10");
+    form.append("difficulty", req.body.difficulty || "Medium");
+    form.append("duration", req.body.duration || "10");
+
+    const pyBackendUrl = process.env.PYTHON_BACKEND_URL || (
+      process.env.NODE_ENV === "production"
+        ? "https://studysphere-py-backend.onrender.com/generate-quiz"
+        : "http://localhost:10000/generate-quiz"
+    );
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[DEVELOPMENT] Incoming request to generate quiz. Title: ${req.body.title}, Qs: ${req.body.num_questions}`);
+      console.log(`[DEVELOPMENT] PDF size: ${req.file.size} bytes`);
+      console.log(`[DEVELOPMENT] Forwarding request to Python backend at: ${pyBackendUrl}`);
+    }
+
+    const startTime = Date.now();
+    const response = await axios.post(pyBackendUrl, form, {
+      headers: {
+        ...form.getHeaders(),
+      },
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity,
+      timeout: 90000, // 90 seconds timeout for large PDFs
+    });
+    const durationTime = Date.now() - startTime;
+
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[DEVELOPMENT] Groq response time: ${durationTime}ms`);
+      console.log(`[DEVELOPMENT] Questions generated: ${response.data.quiz?.questions?.length || 0}`);
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "Quiz generated successfully",
+      quiz: response.data.quiz,
+      timestamp: new Date().toISOString(),
+      requestId
+    });
+
+  } catch (error) {
+    console.error("[ERROR] Failed to communicate with Python backend:", error.message);
+    const status = error.response?.status || 500;
+    const errorMessage = error.response?.data?.error || error.response?.data?.message || "Failed to generate quiz. Check server logs.";
+    const errorCode = error.response?.data?.errorCode || "PYTHON_BACKEND_FAILED";
+    const details = error.response?.data?.details || error.message;
+
+    return res.status(status).send({
+      success: false,
+      message: errorMessage,
+      errorCode,
+      details,
+      timestamp: new Date().toISOString(),
+      requestId
+    });
+  }
+});
+
 module.exports = {
   createQuiz,
   getQuizzes,
@@ -243,4 +337,5 @@ module.exports = {
   submitQuiz,
   getUserQuizzes,
   stopQuiz,
+  generateQuizAI,
 };
