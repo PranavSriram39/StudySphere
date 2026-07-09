@@ -302,5 +302,5 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for more details.
 ---
 
 <div align="center">
-  <b>Built with ❤️ using Next.js, Express.js, MongoDB, Flask, Groq AI, Socket.IO and WebRTC.</b>
+  <b>Built with using  React.js, Next.js, Express.js, MongoDB, Flask, Groq AI, Socket.IO and WebRTC.</b>
 </div>
