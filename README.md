@@ -5,7 +5,7 @@
   
   <h3>Next-Generation Virtual Group Study & AI Assessment Platform</h3>
 
-  <p>An enterprise-grade, real-time collaboration environment featuring AI-generated quizzes, WebRTC video calling, shared canvas whiteboards, and robust role-based progress analytics.</p>
+  <p>StudySphere is a collaborative online learning platform where students can study together, take AI-generated quizzes, join video meetings, chat in real time, and track their learning progress through interactive analytics.</p>
 
   <p>
     <a href="https://studysphere39.vercel.app"><img src="https://img.shields.io/badge/Production%20Link-Live%20Demo-blueviolet?style=for-the-badge&logo=vercel" alt="Live Demo" /></a>
