@@ -14,7 +14,7 @@ const Header = ({ activeSection }) => {
     () => [
       {
         label: "Home",
-        link: "/Home",
+        link: "Home",
       },
       {
         label: "About",

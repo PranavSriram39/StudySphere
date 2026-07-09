@@ -21,38 +21,66 @@ import { FaLayerGroup } from "react-icons/fa";
 import Footer from "./Footer";
 import PrimaryBtn from "../Helpers/PrimaryBtn";
 
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions2 = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData2,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
+const defaultOptions3 = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData3,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
 export default function MainPage() {
 
   useEffect(() => {
     Aos.init();
+
+    // Enable natural scrolling for the landing page
+    const origHtmlOverflowY = document.documentElement.style.overflowY;
+    const origHtmlOverflowX = document.documentElement.style.overflowX;
+    const origHtmlHeight = document.documentElement.style.height;
+    const origHtmlScrollBehavior = document.documentElement.style.scrollBehavior;
+    const origBodyOverflowY = document.body.style.overflowY;
+    const origBodyOverflowX = document.body.style.overflowX;
+    const origBodyHeight = document.body.style.height;
+
+    document.documentElement.style.overflowY = "auto";
+    document.documentElement.style.overflowX = "hidden";
+    document.documentElement.style.height = "auto";
+    document.documentElement.style.scrollBehavior = "smooth";
+    document.body.style.overflowY = "auto";
+    document.body.style.overflowX = "hidden";
+    document.body.style.height = "auto";
+
+    return () => {
+      // Revert styles to default when navigating away
+      document.documentElement.style.overflowY = origHtmlOverflowY;
+      document.documentElement.style.overflowX = origHtmlOverflowX;
+      document.documentElement.style.height = origHtmlHeight;
+      document.documentElement.style.scrollBehavior = origHtmlScrollBehavior;
+      document.body.style.overflowY = origBodyOverflowY;
+      document.body.style.overflowX = origBodyOverflowX;
+      document.body.style.height = origBodyHeight;
+    };
   }, []);
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
-  const defaultOptions2 = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData2,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
-  const defaultOptions3 = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData3,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
 
   // useEffect(() => {
   //   const handleScroll = () => {

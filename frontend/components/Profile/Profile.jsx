@@ -530,12 +530,12 @@ const Profile = () => {
                   <div className="sm:col-span-2 space-y-1.5">
                     <label className="text-[10px] uppercase font-bold text-slate-450 block">Bio Description</label>
                     <textarea
-                      rows={2.5}
+                      rows={3}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-blue-500 transition resize-none"
                       value={editForm.bio}
                       onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
                       placeholder="Write a brief overview about yourself..."
-                    />
+                    ></textarea>
                   </div>
 
                   <div className="space-y-1.5">
