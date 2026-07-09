@@ -1,137 +1,217 @@
 # StudySphere
 
-> **StudySphere** - A next generation virtual group study platform
+<div align="center">
+  <img src="https://raw.githubusercontent.com/PranavSriram39/StudySphere/main/frontend/public/studysphere-logo.png" alt="StudySphere Logo" width="220px" onError="this.onerror=null;this.src='https://placehold.co/600x400?text=StudySphere+Logo';" />
+  
+  <h3>Next-Generation Virtual Group Study & AI Assessment Platform</h3>
 
-## Table of Contents
-- [Description](#description)
-- [Links](#links)
-- [Tech Stack](#tech-stack)
-- [Progress](#progress)
-- [Future Scope](#future-scope)
-- [Applications](#applications)
-- [Project Setup](#project-setup)
-- [Usage](#usage)
+  <p>An enterprise-grade, real-time collaboration environment featuring AI-generated quizzes, WebRTC video calling, shared canvas whiteboards, and robust role-based progress analytics.</p>
 
----
-
-## 📝 Description
-
-### General Description
-StudySphere... as the name suggests is the next generation virtual group study platform designed for the students by the students. It involved many entities such as student's particular organization, teachers & students of that organization etc. Using this web platform organizations can improve their overall flow of learning. All the students & teachers of the organizations can have a insightful communication through interactive channels where teachers can upload study documents, arrange assessments for the students. Also if a group of students wants to study only in their anonymous group then they can create their own private channels where they can interact.
-
-### Workflow
-* **Organization Registration:** Organization should register themselves. Separate general channel will be created for each organization.
-* **Invites:** Then admin can share organization invite code to their respective entities in the organization such as teachers, students etc.
-* **Channels:** Teachers can create channels as per their requirements to interact with the students. Channel features include: Realtime interactive chat, Realtime video streaming along with whiteboard and screen sharing like attractive features, etc.
-* **Participation:** User can join to the only one organization and multiple channels at a time. Users in the organization can participate in the assessments uploaded by the admins in their respective channel and can watch their rankings in the leaderboard section of the organization which indicates continuous progress in the form of points & graph.
-* **Profile:** User can also view their profile which is updated along with the active participation of the user on our platform.
-
----
-
-## 🔗 Links
-
-* [GitHub Repository](https://github.com/PranavSriram39/StudySphere)
-* [Hosted Website Link](https://studysphere39.vercel.app)
-* [Hosted Backend Link](https://studysphere-backend-nygl.onrender.com)
+  <p>
+    <a href="https://studysphere39.vercel.app"><img src="https://img.shields.io/badge/Production%20Link-Live%20Demo-blueviolet?style=for-the-badge&logo=vercel" alt="Live Demo" /></a>
+    <a href="https://github.com/PranavSriram39/StudySphere/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License MIT" /></a>
+    <img src="https://img.shields.io/badge/Node-v18%2B-green?style=for-the-badge&logo=node.js" alt="Node Version" />
+    <img src="https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python" alt="Python Version" />
+  </p>
+  
+  <p>
+    <img src="https://img.shields.io/badge/Next.js-13.5-black?style=flat-square&logo=next.js" alt="NextJS" />
+    <img src="https://img.shields.io/badge/React-18-blue?style=flat-square&logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/Express-4.18-lightgrey?style=flat-square&logo=express" alt="Express" />
+    <img src="https://img.shields.io/badge/Flask-3.0-orange?style=flat-square&logo=flask" alt="Flask" />
+    <img src="https://img.shields.io/badge/MongoDB-Mongoose-brightgreen?style=flat-square&logo=mongodb" alt="MongoDB" />
+    <img src="https://img.shields.io/badge/Socket.IO-v4-cyan?style=flat-square&logo=socket.io" alt="SocketIO" />
+    <img src="https://img.shields.io/badge/WebRTC-PeerJS-red?style=flat-square&logo=webrtc" alt="WebRTC" />
+  </p>
+</div>
 
 ---
 
-## 🤖 Tech-Stack
+## 📖 Table of Contents
 
-### Front-end
-* Next.js
-* React.js
-* Tailwind CSS
-* Material UI
-* Framer Motion
-
-### Back-end
-* Node.js
-* Express.js
-* Flask
-* Cloudinary (for storing media content)
-
-### Database
-* MongoDB
-
-### API Management Platform
-* Postman
-
-### Project Deployment
-* Vercel (Frontend)
-* Render (Backend)
+- [Project Overview](#-project-overview)
+- [Key Features](#-key-features)
+- [Core Technical Manuals](#-core-technical-manuals)
+- [Architecture Summary](#-architecture-summary)
+- [Database Schema Outline](#-database-schema-outline)
+- [Tech Stack Matrix](#-tech-stack-matrix)
+- [Local Installation](#-local-installation)
+- [Screenshots & Placeholders](#-screenshots--placeholders)
+- [Roadmap](#-roadmap)
+- [Contributing](#-contributing)
+- [License](#-license)
 
 ---
 
-## 📈 Progress
+## 🌟 Project Overview
 
-### Fully Implemented Features
-- [x] Customized channel creation.
-- [x] General channel where everyone in the organization can interact.
-- [x] Exclusive Group chat for the channels for texting, sharing important files such as pdfs, ppts or doc, or for just bickering.
-- [x] Realtime video meet feature for one to one interaction along with screen sharing capability.
-- [x] White board functionality which helps users for demonstration purpose.
-- [x] Assessment for users for testing their skills or for teachers to conduct TAs, all just a click away, just upload your pdf file and get quizzes generated automatically with points scores.
-- [x] Leaderboard to keep track of users points and to keep their competitive fire ignited.
-- [x] Graphs and Charts to track the progress of a user to correctly gauge his skills and to show users journey along the way.
+**StudySphere** is a virtual, multi-tenant learning workspace designed to bridge the gap between traditional educational structures and modern remote study platforms. 
 
-### Partially Implemented Features
-- [ ] Scheduling of the assessments.
-- [ ] Scheduling the events in platform itself (such as scheduling hackathons and have our AI calculate the scores and rankings).
+### Why StudySphere?
+Standard remote meeting software lacks built-in tools for tracking academic progress, structuring organization hierarchies, and generating real-time learning assessments. StudySphere provides structured workspace hierarchies (Organizations and Channels), real-time peer-to-peer screen/video interaction, shared whiteboard collaboration, and an automated AI-driven quiz generator engine to test students instantly.
+
+### Core Problems Solved:
+1. **Academic Fragmentation:** Centralizes study groups, files, assessments, leaderboards, and video calls into a single unified workspace.
+2. **Manual Quiz Creation Overhead:** Leverages Llama-3.3 LLMs to convert course syllabus PDFs into structured MCQ examinations with zero prep-time.
+3. **Engagement Isolation:** Ignites competitive spirits through streak retention features, profile badges, and real-time leaderboard statistics.
 
 ---
 
-## 🔮 Future Scope
+## ✨ Key Features
 
-* Scheduling the events in platform itself, (such as scheduling hackathons and have our AI calculate the scores and rankings).
-* Exclusive user mental health checker.
+StudySphere is split into modular components designed for high-availability performance:
 
----
+### 🔐 Auth & Governance
+* **Secure JWT Sessions:** Stateful cookies handle secure login/session tokens for route authentication.
+* **Role-Based Access Control (RBAC):** Strict boundaries between **Organization Admins**, **Channel Admins**, and **Students**.
+* **Profile Customization:** Personal bio logs, skill arrays, avatar upload mechanics, and activity analytics.
 
-## 💸 Applications
+### 🏫 Workspace Directories
+* **Organization Hierarchies:** Multi-tenant code matching invites that allow students to cluster within their organization domain.
+* **Subject Channels:** Channel administrators configure distinct topic boards, locking them down or opening access.
+* **Real-time Chats:** Streamlined sync chats powered by Socket.IO supporting file upload and media distribution.
 
-Your virtual group study platform contributes to solving real-life problems by:
-* Enhancing remote learning and collaboration.
-* Bridging the gap in education by providing equal access to all the students in the organization.
-* Improving communication and teamwork in various settings.
-* Facilitating dynamic learning channels and adaptable structures.
-* Offering assessment and skill development opportunities.
-* Monetization can be achieved through premium features, collaborations with institutions, and certification programs.
+### 🎥 Live Collaboration
+* **WebRTC Video Rooms:** One-to-one and group video meetings integrated with client microphone, camera, and screen sharing tools.
+* **PeerJS Connection Handlers:** Simplified direct signaling channels backed by custom socket rooms.
+* **Shared Whiteboard Canvas:** Multi-user collaborative HTML5 drawing board for illustrations during video meets.
 
----
-
-## 🛠 Project Setup
-
-### Frontend
-1.  Install Node.js runtime on your local machine.
-2.  Navigate to the frontend directory.
-3.  Install dependencies:
-    ```bash
-    npm i --force
-    ```
-4.  Run the development server:
-    ```bash
-    npm run dev
-    ```
-
-### Backend
-1.  Create a new folder & initialize the project using `npm init`.
-2.  Install required dependencies.
-3.  Create a new account on MongoDB Atlas and create a new project.
-4.  Connect to the project using the MongoDB connection string via Mongoose in the Express app.
-5.  Run the server:
-    ```bash
-    node server.js
-    ```
-
-> **Note:** Others can simply fork the repository & then clone it in their machine. Once done they should run `npm i --force` to install all the required dependencies.
+### 🤖 AI Assessment Engine
+* **PDF Parser Extractor:** Automatic text retrieval from course uploads.
+* **Groq Llama-3.3 Pipeline:** Python Flask server feeds prompt vectors to Groq, returning strict-format JSON quiz specifications.
+* **Validation & Repair Engine:** Sanitizes double option entries, regenerates corrupt MCQ questions, and enforces index alignment.
+* **Leaderboards & Streak Metrics:** Automated scoring engine tracking time taken, correctness ratio, daily streaks, and custom activity badges.
 
 ---
 
-## 💻 Usage
+## 📚 Core Technical Manuals
 
-1.  **Environment Variables:** Users are required to add a `.env` file in order to run the project.
-2.  **Start:** Simply run the following command to start the project:
-    ```bash
-    npm run dev
-    ```
+We have broken down our core architectures, APIs, and models into detailed specifications:
+
+* 📐 **[System Architecture](file:///c:/Users/prana/StudySphere/docs/architecture.md)** — Explains the Next.js frontend flow, request lifecycles, and Socket.IO/WebRTC signaling.
+* 🌐 **[REST API Specifications](file:///c:/Users/prana/StudySphere/docs/api.md)** — Tabular mapping of authentication, organizations, channels, quizzes, and leaderboard routes.
+* 💾 **[Database Configuration](file:///c:/Users/prana/StudySphere/docs/database.md)** — Mongoose model properties, relations, indexing, and ER diagrams.
+* 🛡️ **[RBAC Rules & Guards](file:///c:/Users/prana/StudySphere/docs/rbac.md)** — Permission matrix, quiz attempt restrictions, and route security policies.
+* ⚙️ **[Deployment & Environment Settings](file:///c:/Users/prana/StudySphere/docs/deployment.md)** — Environment variable templates (.env) and Render configuration files.
+* 🔄 **[Application Lifecycles](file:///c:/Users/prana/StudySphere/docs/workflow.md)** — Diagram-guided steps for AI Quiz generation, attempt scoring, and WebRTC handshakes.
+
+---
+
+## 📐 Architecture Summary
+
+StudySphere uses a multi-tier client-server architecture. For detailed sequential flows, refer to our **[Architecture Manual](file:///c:/Users/prana/StudySphere/docs/architecture.md)**.
+
+```mermaid
+flowchart TD
+    User["Student / Teacher Client"] -->|HTTPS (Axios)| Express["Express.js Server (Port 5000)"]
+    User -->|WebSockets| SocketIO["Socket.IO Connection Plane"]
+    User -->|WebRTC Media Streams| PeerJS["PeerJS P2P Signaling Node"]
+    Express -->|Queries / Updates| DB[("MongoDB Atlas")]
+    Express -->|Fetch POST| FlaskAI["Flask AI Service (Port 10000)"]
+    FlaskAI -->|API Request| GroqAPI["Groq Llama-3.3 Cloud"]
+```
+
+---
+
+## 💾 Database Schema Outline
+
+StudySphere uses a structured Mongoose DB layout. Read the **[Database Manual](file:///c:/Users/prana/StudySphere/docs/database.md)** for index properties and pre-save hooks.
+
+* **User (`User`):** Profile details, streaking records, and performance histories.
+* **Organizations (`Organizations`):** Unique codes, creator handles, and user listings.
+* **Channels (`Channels`):** Subject descriptors, permissions, and members arrays.
+* **Chats (`Chats`):** Thread structures and pointers to latest messages.
+* **Messages (`Messages`):** Attachment logs, sender objects, and type fields.
+* **Quizzes (`Quizzes`):** Question specifications, time ceilings, and creator credentials.
+* **QuizAttempt (`QuizUserMap`):** Selected responses, duration records, accuracy, and badge metrics.
+
+---
+
+## 🛠 Tech Stack Matrix
+
+| Layer | Technology | Primary Purpose |
+| :--- | :--- | :--- |
+| **Frontend** | React, Next.js (v13.5 App Router), Tailwind CSS, Framer Motion, Material UI | UI, styling, animations, dashboard layout. |
+| **State Manager** | Zustand | Global client states (auth, active orgs/channels). |
+| **Backend API** | Node.js, Express.js | Controller-Service REST APIs, route guards. |
+| **AI Server** | Python 3.10+, Flask | PDF extraction (PyPDF2), validation, and Groq SDK integration. |
+| **Real-time Sync** | Socket.IO, WebRTC, PeerJS | Chat events, call signaling, status sharing. |
+| **Database** | MongoDB Atlas, Mongoose | Schema definitions, collections relations. |
+| **Asset Storage** | Cloudinary | Upload handler for avatars and file sharing. |
+| **Model Engine** | Llama-3.3-70b-versatile via Groq Cloud | Rapid JSON MCQ generation and question repairs. |
+
+---
+
+## 💻 Local Installation
+
+Ensure you have **Node.js (v18+)**, **Python (v3.10+)**, and **MongoDB** installed locally.
+
+### 1. Setup Environment Variables
+Before running the services, create local configuration files according to the **[Deployment Specification](file:///c:/Users/prana/StudySphere/docs/deployment.md)**.
+
+### 2. Launch Express Backend
+```bash
+cd backend
+npm install
+node server.js
+```
+
+### 3. Launch Flask Python AI Service
+```bash
+cd py-backend
+python -m venv venv
+# Windows activate:
+.\venv\Scripts\activate
+# macOS/Linux activate: source venv/bin/activate
+pip install -r requirements.txt
+python backend.py
+```
+
+### 4. Launch Next.js Frontend
+```bash
+cd frontend
+npm install --force
+npm run dev
+```
+Navigate to `http://localhost:3000` to interact with the platform.
+
+---
+
+## 🖼 Screenshots & Placeholders
+
+* **Dashboard Landing Panel**
+  ![Dashboard Landing Placeholder](https://placehold.co/800x450/1e293b/ffffff?text=StudySphere+Dashboard+View)
+  
+* **Real-time Channel Classroom Meeting & Shared Whiteboard Canvas**
+  ![Collaboration Screen Placeholder](https://placehold.co/800x450/1e293b/ffffff?text=Video+Meetings+%26+Interactive+Whiteboard)
+
+* **AI Quiz Editor & Performance Analytics Chart**
+  ![Quiz Panel Placeholder](https://placehold.co/800x450/1e293b/ffffff?text=AI+Quiz+Generator+%26+Leaderboard+Charts)
+
+---
+
+## 🗺 Roadmap
+
+- [x] **Milestone 1:** Establish organization tenants and invite structures.
+- [x] **Milestone 2:** Implement Socket.IO messages syncing and WebRTC screen sharing.
+- [x] **Milestone 3:** Deploy Flask backend with Groq pipeline and validation checkers.
+- [ ] **Milestone 4:** Calendar integration for scheduling exams and live events (hackathons).
+- [ ] **Milestone 5:** AI-driven study planner and mental health checks page.
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions to StudySphere! 
+
+1. **Fork** this repository.
+2. Create a new branch: `git checkout -b feature/amazing-feature`.
+3. Commit changes: `git commit -m "Add some amazing feature"`.
+4. Push to branch: `git push origin feature/amazing-feature`.
+5. Open a **Pull Request**.
+
+---
+
+## 📄 License
+
+Distributed under the MIT License. See [LICENSE](file:///c:/Users/prana/StudySphere/LICENSE) for more details.
