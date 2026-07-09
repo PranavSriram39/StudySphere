@@ -193,6 +193,12 @@ Here is a visual tour of the StudySphere user interface and core features:
 ### 🖥️ Direct Peer-to-Peer Screen Sharing
 ![Screen Sharing View](IMAGES/screensharing.png)
 
+### 📝 AI Quiz Generation
+
+Show the AI-powered assessment generation page where Organization Creators and Channel Creators can generate quizzes from a topic or uploaded PDF using the integrated AI engine.
+
+![AI Quiz Generation](IMAGES/quiz-generation.png)
+
 ### 🏆 Gamified Leaderboard Standings
 ![Leaderboard View](IMAGES/leaderboard.png)
 
