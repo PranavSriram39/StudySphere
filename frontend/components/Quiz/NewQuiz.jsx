@@ -50,6 +50,19 @@ const NewQuiz = ({ setCreatePage }) => {
       return;
     }
 
+    // Validate PDF MIME type
+    if (file.type !== "application/pdf") {
+      toast.error("Only PDF files are supported");
+      return;
+    }
+
+    // Validate max file size: 10 MB
+    const MAX_SIZE_BYTES = 10 * 1024 * 1024;
+    if (file.size > MAX_SIZE_BYTES) {
+      toast.error("File too large. Maximum allowed size is 10 MB");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -65,20 +78,28 @@ const NewQuiz = ({ setCreatePage }) => {
           ? "https://studysphere-py-backend.onrender.com/generate-quiz"
           : "http://localhost:10000/generate-quiz";
 
-      const response = await axios.post(
-        pyBackendUrl,
-        formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
-      );
+      // ✅ Do NOT set Content-Type manually — Axios will set multipart/form-data
+      // with the correct boundary automatically when given a FormData object.
+      // Manually setting "Content-Type: multipart/form-data" strips the boundary
+      // parameter, causing Flask to fail to parse the uploaded file (400 error).
+      const response = await axios.post(pyBackendUrl, formData, {
+        timeout: 120000, // 2 minutes — Groq generation can be slow
+      });
+
+      if (!response.data?.quiz) {
+        throw new Error("Server returned success but no quiz data found");
+      }
 
       setQuiz(response.data.quiz);
 
     } catch (error) {
-      console.error(error);
-      toast.error(
+      console.error("[generateQuiz] Error:", error);
+      const serverMsg =
         error?.response?.data?.error ||
-        "Backend error. Check backend terminal."
-      );
+        error?.response?.data?.message ||
+        error?.message ||
+        "Quiz generation failed. Please try again.";
+      toast.error(serverMsg);
     } finally {
       setLoading(false);
     }
