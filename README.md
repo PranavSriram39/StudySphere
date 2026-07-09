@@ -18,19 +18,19 @@
 
 ## 📖 Table of Contents
 
-- [Project Overview](#-project-overview)
-- [Project Highlights](#-project-highlights)
-- [Feature Showcase](#-feature-showcase)
-- [System Workflow](#-system-workflow)
-- [Architecture](#-architecture)
-- [Tech Stack](#-tech-stack)
-- [Folder Structure](#-folder-structure)
-- [Screenshots & Interface](#-screenshots--interface)
-- [Local Installation](#-local-installation)
-- [Core Documentation](#-core-documentation)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [Project Overview](#project-overview)
+- [Project Highlights](#project-highlights)
+- [Feature Showcase](#feature-showcase)
+- [System Workflow](#system-workflow)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Folder Structure](#folder-structure)
+- [Screenshots & Interface](#screenshots--interface)
+- [Local Installation](#local-installation)
+- [Core Documentation](#core-documentation)
+- [Roadmap](#roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -189,30 +189,39 @@ StudySphere/
 ## 🖼 Screenshots & Interface
 
 ### 🏠 Landing Dashboard
+The welcome interface featuring the platform's core value propositions and direct access to workspaces.
 ![Dashboard Landing View](IMAGES/home.png)
 
 ### 🏫 Organization Workspace
+The central hub for multi-tenant organizations and nested subject channels.
 ![Organization View](IMAGES/org.png)
 
 ### 📝 AI Quiz Generation
+Show the AI-powered assessment generation page where Organization Creators and Channel Creators can generate quizzes from a topic or uploaded PDF using the integrated AI engine.
 ![AI Quiz Generation](IMAGES/quiz-generation.png)
 
 ### ⏱️ Live Assessment Interface
+Real-time quiz taking interface with a dynamic question palette, flagged review system, and timed submission.
 ![Live Assessment](IMAGES/assessmentsection.png)
 
 ### 🏆 Gamified Leaderboard
+Real-time organizational rankings tracking scores, accuracy, and daily streaks to ignite competitive learning.
 ![Leaderboard View](IMAGES/leaderboard.png)
 
 ### 👤 Student Profile & Progress
+Personalized user profiles highlighting activity history, skill arrays, and overall academic progress.
 ![User Profile View](IMAGES/userprofile.png)
 
 ### 💬 Video Meeting Classroom
+WebRTC-powered live collaboration rooms for real-time peer-to-peer study sessions.
 ![Video Meeting Session](IMAGES/meet.png)
 
 ### 🖥️ Peer-to-Peer Screen Sharing
+Direct screen broadcasting capabilities integrated within the video meeting environment.
 ![Screen Sharing View](IMAGES/screensharing.png)
 
 ### ℹ️ Platform About
+Detailed platform information and version details.
 ![About Panel View](IMAGES/about.png)
 
 ---
