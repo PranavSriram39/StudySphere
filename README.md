@@ -1,7 +1,7 @@
 # StudySphere
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/PranavSriram39/StudySphere/main/frontend/public/studysphere-logo.png" alt="StudySphere Logo" width="220px" onError="this.onerror=null;this.src='https://placehold.co/600x400?text=StudySphere+Logo';" />
+  <img src="frontend/public/Assets/Images/studyLogo.svg" alt="StudySphere Logo" width="220px" onError="this.onerror=null;this.src='https://placehold.co/600x400?text=StudySphere+Logo';" />
   
   <h3>Next-Generation Virtual Group Study & AI Assessment Platform</h3>
 
