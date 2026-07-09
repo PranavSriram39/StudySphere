@@ -199,6 +199,12 @@ Show the AI-powered assessment generation page where Organization Creators and C
 
 ![AI Quiz Generation](IMAGES/quiz-generation.png)
 
+### ⏱️ Live Assessment Environment
+
+Real-time quiz taking interface with a dynamic question palette, flagged review system, and timed submission.
+
+![Live Assessment](IMAGES/assessmentsection.png)
+
 ### 🏆 Gamified Leaderboard Standings
 ![Leaderboard View](IMAGES/leaderboard.png)
 
