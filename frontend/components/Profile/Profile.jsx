@@ -245,7 +245,7 @@ const Profile = () => {
       <div className="flex flex-col items-center justify-center p-8 space-y-4 max-w-md mx-auto text-center min-h-[50vh] text-slate-200">
         <div className="text-rose-500 font-black text-lg">Failed to Load Profile</div>
         <p className="text-xs text-slate-450">
-          We couldn't retrieve your profile data from the server. Please check your connection and retry.
+          We couldn&apos;t retrieve your profile data from the server. Please check your connection and retry.
         </p>
         <button
           onClick={fetchProfileAllData}
