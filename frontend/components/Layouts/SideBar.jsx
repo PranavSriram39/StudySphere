@@ -29,6 +29,10 @@ const SideBar = ({
   const userDetails = userDetailsStore((state) => state.userDetails);
   const [showMenu, setShowMenu] = useState(false);
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const generalChannel = generalChannelStore((state) => state.generalChannel);
   const commonTabs = useMemo(
     () => [
@@ -78,13 +82,21 @@ const SideBar = ({
         className="flex gap-4 items-center relative py-3 md:cursor-pointer"
         onClick={() => window.location.reload()}
       >
-        <Image
-          src={orgDetails?.image}
-          alt="org logo"
-          width="50"
-          height="50"
-          className="rounded-full h-12 w-12  object-cover"
-        />
+        {mounted && orgDetails?.image ? (
+          <Image
+            src={orgDetails.image}
+            alt="org logo"
+            width="50"
+            height="50"
+            className="rounded-full h-12 w-12  object-cover"
+          />
+        ) : (
+          <div className="bg-nack flex justify-center items-center h-12 w-12 rounded-full shrink-0">
+            <p className="text-lg text-center font-bold">
+              {orgDetails?.name ? orgDetails.name[0].toUpperCase() : "S"}
+            </p>
+          </div>
+        )}
         <h1 className="text-md font-bold line-clamp-2">{orgDetails?.name}</h1>
       </motion.div>
       <hr className="bg-white h-[2px]" />
@@ -153,7 +165,7 @@ const SideBar = ({
             className="flex gap-4 items-center md:cursor-pointer"
             onClick={() => router.push("/Profile")}
           >
-            {userDetails.image ? (
+            {mounted && userDetails?.image ? (
               <Image
                 src={userDetails?.image}
                 alt="org logo"

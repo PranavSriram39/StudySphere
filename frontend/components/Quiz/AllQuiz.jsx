@@ -192,15 +192,14 @@ const QuizDetails = ({ setQuizId, quizId }) => {
       </div>
       <div className="flex justify-between lg:px-10 px-2">
         <p className="font-bold">Quiz title : {quizData?.title}</p>
-        <p>10 Points</p>
+        <p>{data?.totalMarks || (Array.isArray(data) ? data.length : data?.questions?.length) || 10} Points</p>
       </div>
 
       {!isLoading ? (
         <div>
-          {data &&
-            data.map((quiz, index) => (
-              <Quiz key={index} question={quiz} listing={true} />
-            ))}
+          {(Array.isArray(data) ? data : (data?.questions || [])).map((quiz, index) => (
+            <Quiz key={index} question={quiz} listing={true} />
+          ))}
         </div>
       ) : (
         // loader

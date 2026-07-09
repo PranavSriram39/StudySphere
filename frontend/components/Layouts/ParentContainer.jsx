@@ -27,11 +27,14 @@ const ParentContainer = ({ children, orgData, channelsData }) => {
 
   const [popup, setPopup] = useState("");
 
-  const generalChannel = channelsData.filter(
-    (item) => item?.name === "General" && item?.org_id === orgData.data?._id
-  );
-  setGeneralChannel(generalChannel[0]);
-  setOrgDetails(orgData.data);
+  useEffect(() => {
+    const generalChannel = channelsData.filter(
+      (item) => item?.name === "General" && item?.org_id === orgData.data?._id
+    );
+    setGeneralChannel(generalChannel[0]);
+    setOrgDetails(orgData.data);
+  }, [orgData, channelsData]);
+
   return (
     <div className="grid lg:grid-cols-[280px,1fr] mx-auto bg-main overflow-hidden">
       <SideBar

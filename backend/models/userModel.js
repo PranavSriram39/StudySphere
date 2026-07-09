@@ -39,12 +39,59 @@ const userModel = mongoose.Schema(
         default: [0],
       },
     },
+    currentStreak: {
+      type: Number,
+      default: 0,
+    },
+    longestStreak: {
+      type: Number,
+      default: 0,
+    },
+    badges: {
+      type: [String],
+      default: [],
+    },
     token: {
       type: String,
     },
     org_joined: {
       type: String,
     },
+    bio: {
+      type: String,
+      default: "",
+    },
+    phone: {
+      type: String,
+      default: "",
+    },
+    linkedin: {
+      type: String,
+      default: "",
+    },
+    github: {
+      type: String,
+      default: "",
+    },
+    portfolio: {
+      type: String,
+      default: "",
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    lastLogin: {
+      type: Date,
+    },
+    recentActivities: [
+      {
+        title: { type: String, required: true },
+        description: { type: String, required: true },
+        icon: { type: String, required: true },
+        timestamp: { type: Date, default: Date.now },
+      },
+    ],
   },
   {
     timestamps: true,

@@ -1,5 +1,5 @@
-const errorResponse = ({ res, message }) => {
-  res.status(200).send({
+const errorResponse = ({ res, message, status = 200 }) => {
+  res.status(status).send({
     status: false,
     message,
   });

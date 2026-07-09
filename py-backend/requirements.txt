@@ -3,6 +3,6 @@ PyPDF2
 flask
 flask_cors
 gunicorn==19.7.1
-google-generativeai
+openai
 python-dotenv
 

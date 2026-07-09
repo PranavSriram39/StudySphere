@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import usePlayer from "./usePlayer";
 import socket from "@/lib/socketInstance";
 import { useParams } from "next/navigation";
@@ -18,7 +18,7 @@ const Room = () => {
   const roomId = useParams().id;
   const { players, setPlayers, toggleAudio, toggleVideo, leaveRoom } =
     usePlayer(myPeer, peerIns);
-  const [users, setUser] = useState([]);
+  const [users, setUser] = useState({});
   const [show, setShow] = useState(false);
   const [peerCall, setPeerCall] = useState(null);
   const [time, setTime] = useState(0);
@@ -32,53 +32,81 @@ const Room = () => {
   const [id, setId] = useState(0);
   const [isScreenSharing, setScreenSharing] = useState(false);
   const [screenStream, setScreenStream] = useState(null);
-  
+
+  const myStreamRef = useRef(null);
+  const screenStreamRef = useRef(null);
+  const peerRef = useRef(null);
+  const usersRef = useRef({});
+  const userDetailsRef = useRef(userDetails);
+  const timeRef = useRef(time);
+  const screenShareIdRef = useRef(null);
+
+  useEffect(() => {
+    userDetailsRef.current = userDetails;
+  }, [userDetails]);
+
+  useEffect(() => {
+    timeRef.current = time;
+  }, [time]);
+
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    const initPeer = () => {
-      const peer = new Peer();
-      peer.on("open", (id) => {
-        // console.log("Your peer id is " + id);
-        setMyPeer(id);
-        socket.emit(
-          "join-room",
-          roomId,
-          id,
-          userDetails?.name,
-          userDetails?.image
-        );
-      });
 
-      peer.on("call", (call) => {
-        navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then((stream) => {
-            setMyStream(stream);
-            setPlayers((prev) => ({
-              ...prev,
-              [myPeer]: {
-                url: stream,
-                playing: urlParams.get("playing") == "false" ? false : true,
-                muted: urlParams.get("muted") == "false" ? false : true,
-                name: userDetails.name,
-                image: userDetails.image,
-              },
-            }));
-            call.answer(stream);
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setMyStream(stream);
+        myStreamRef.current = stream;
+
+        setPlayers((prev) => ({
+          ...prev,
+          null: {
+            url: stream,
+            playing: urlParams.get("playing") === "false" ? false : true,
+            muted: urlParams.get("muted") === "false" ? false : true,
+            name: userDetailsRef.current?.name,
+            image: userDetailsRef.current?.image,
+          },
+        }));
+
+        const peer = new Peer();
+        peerRef.current = peer;
+        setPeerIns(peer);
+
+        peer.on("open", (id) => {
+          setMyPeer(id);
+          socket.emit(
+            "join-room",
+            roomId,
+            id,
+            userDetailsRef.current?.name,
+            userDetailsRef.current?.image
+          );
+        });
+
+        peer.on("call", (call) => {
+          if (myStreamRef.current) {
+            call.answer(myStreamRef.current);
             setPeerCall(call);
+
             call.on("stream", (incomingStream) => {
-              const userName = call.metadata.name;
-              const nTime = call.metadata.time;
-              const nImage = call.metadata.image;
-              const screenShareId = call.metadata.screenShareId;
-              setTime(nTime);
-              // console.log("Incoming Stream: ", incomingStream);
+              const userName = call.metadata?.name;
+              const nTime = call.metadata?.time;
+              const nImage = call.metadata?.image;
+              const screenShareId = call.metadata?.screenShareId;
+
+              if (nTime !== undefined) {
+                setTime(nTime);
+              }
               if (screenShareId) {
                 setScreenStream(incomingStream);
+                screenStreamRef.current = incomingStream;
               }
+
+              const displayId = screenShareId ? screenShareId : call.peer;
               setPlayers((prev) => ({
                 ...prev,
-                [screenShareId ? screenShareId : call.peer]: {
+                [displayId]: {
                   url: incomingStream,
                   playing: true,
                   muted: true,
@@ -86,95 +114,105 @@ const Room = () => {
                   image: nImage,
                 },
               }));
-              setUser((prev) => ({
-                ...prev,
-                [screenShareId ? screenShareId : call.peer]: call,
-              }));
+
+              setUser((prev) => {
+                const updated = {
+                  ...prev,
+                  [displayId]: call,
+                };
+                usersRef.current = updated;
+                return updated;
+              });
             });
-          })
-          .catch((err) =>
-            console.error("Error while accessing video stream: ", err)
-          );
-      });
-
-      peer.on("error", (err) => {
-        console.error("PeerJS error: ", err);
-      });
-
-      return peer;
-    };
-
-    const connectToNewUser = (userId, stream, peer, userName, image) => {
-      const call = peer.call(userId, stream, {
-        metadata: {
-          name: userDetails.name,
-          time: time,
-          image: userDetails.image,
-        },
-      });
-
-      if (call) {
-        setPeerCall(call);
-        call.on("stream", (incomingStream) => {
-          // console.log("Incoming Stream: ", incomingStream);
-          setPlayers((prev) => ({
-            ...prev,
-            [userId]: {
-              url: incomingStream,
-              playing: true,
-              muted: true,
-              name: userName,
-              image: image,
-            },
-          }));
-          setUser((prev) => ({
-            ...prev,
-            [userId]: call,
-          }));
+          }
         });
-      } else {
-        console.error("Call object is undefined.");
-      }
-    };
 
-    const peerInstance = initPeer();
-    setPeerIns(peerInstance);
-
-    navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
-      .then((stream) => {
-        setMyStream(stream);
-        setPlayers((prev) => ({
-          ...prev,
-          [myPeer]: {
-            url: stream,
-            playing: urlParams.get("playing") == "false" ? false : true,
-            muted: urlParams.get("muted") == "false" ? false : true,
-            name: userDetails.name,
-            image: userDetails.image,
-          },
-        }));
-        socket.on("user-connected", (userId, userName, image) => {
-          connectToNewUser(userId, stream, peerInstance, userName, image);
+        peer.on("error", (err) => {
+          console.error("PeerJS error: ", err);
         });
+
+        const handleUserConnected = (userId, userName, image) => {
+          if (myStreamRef.current && peerRef.current) {
+            const call = peerRef.current.call(userId, myStreamRef.current, {
+              metadata: {
+                name: userDetailsRef.current?.name,
+                time: timeRef.current,
+                image: userDetailsRef.current?.image,
+              },
+            });
+
+            if (call) {
+              setPeerCall(call);
+              call.on("stream", (incomingStream) => {
+                setPlayers((prev) => ({
+                  ...prev,
+                  [userId]: {
+                    url: incomingStream,
+                    playing: true,
+                    muted: true,
+                    name: userName,
+                    image: image,
+                  },
+                }));
+
+                setUser((prev) => {
+                  const updated = {
+                    ...prev,
+                    [userId]: call,
+                  };
+                  usersRef.current = updated;
+                  return updated;
+                });
+              });
+            } else {
+              console.error("Call object is undefined.");
+            }
+          }
+        };
+
+        socket.on("user-connected", handleUserConnected);
+        myStreamRef.current._handleUserConnected = handleUserConnected;
       })
       .catch((err) =>
         console.error("Error accessing camera and microphone:", err)
       );
 
     return () => {
-      socket.off("user-connected", (userId) => {
-        // cleanup
-      });
-      peerInstance.destroy();
+      if (myStreamRef.current && myStreamRef.current._handleUserConnected) {
+        socket.off("user-connected", myStreamRef.current._handleUserConnected);
+      }
+
+      if (myStreamRef.current) {
+        myStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+
+      if (screenStreamRef.current) {
+        screenStreamRef.current.getTracks().forEach((track) => track.stop());
+      }
+
+      if (usersRef.current) {
+        Object.values(usersRef.current).forEach((call) => {
+          try {
+            call.close();
+          } catch (e) {
+            console.error("Error closing call on unmount:", e);
+          }
+        });
+      }
+
+      if (peerRef.current) {
+        peerRef.current.destroy();
+      }
     };
-  }, [myPeer, roomId, userDetails]);
+  }, [roomId, setPlayers]);
 
   useEffect(() => {
     const handleToggleAudio = (userId) => {
       setPlayers((prev) => {
         const copy = cloneDeep(prev);
-        copy[userId].muted = !copy[userId].muted;
+        if (copy[userId]) {
+          copy[userId].muted = !copy[userId].muted;
+        }
         return { ...copy };
       });
     };
@@ -182,14 +220,28 @@ const Room = () => {
     const handleToggleVideo = (userId) => {
       setPlayers((prev) => {
         const copy = cloneDeep(prev);
-        copy[userId].playing = !copy[userId].playing;
+        if (copy[userId]) {
+          copy[userId].playing = !copy[userId].playing;
+        }
         return { ...copy };
       });
     };
 
     const handleUserLeave = (userId) => {
       setScreenStream(null);
-      users[userId]?.close();
+      if (usersRef.current && usersRef.current[userId]) {
+        try {
+          usersRef.current[userId].close();
+        } catch (e) {
+          console.error("Error closing call on user leave:", e);
+        }
+        setUser((prev) => {
+          const updated = { ...prev };
+          delete updated[userId];
+          usersRef.current = updated;
+          return updated;
+        });
+      }
       setPlayers((prevPlayers) => {
         const { [userId]: _, ...newPlayers } = prevPlayers;
         return newPlayers;
@@ -207,19 +259,20 @@ const Room = () => {
     socket.on("user-toggle-video", handleToggleVideo);
     socket.on("user-send-message", handleMessageEvent);
     socket.on("user-leave", handleUserLeave);
+
     return () => {
       socket.off("user-toggle-audio", handleToggleAudio);
       socket.off("user-toggle-video", handleToggleVideo);
       socket.off("user-send-message", handleMessageEvent);
       socket.off("user-leave", handleUserLeave);
     };
-  }, [users, setPlayers]);
+  }, [setPlayers]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timer = setInterval(() => {
       setTime((prevTime) => prevTime + 1);
     }, 1000);
-    return () => clearTimeout(timer);
+    return () => clearInterval(timer);
   }, []);
 
   const toTime = (seconds) => {
@@ -231,6 +284,7 @@ const Room = () => {
   const startScreenSharing = () => {
     try {
       let nId = Math.random().toString();
+      screenShareIdRef.current = nId;
       setId(nId);
       navigator.mediaDevices
         .getDisplayMedia({
@@ -238,12 +292,18 @@ const Room = () => {
         })
         .then((stream) => {
           setScreenStream(stream);
+          screenStreamRef.current = stream;
           setScreenSharing(true);
-          Object.keys(users).forEach((userId) => {
-            const call = peerIns.call(userId, stream, {
+
+          stream.getVideoTracks()[0].onended = () => {
+            stopScreenSharing();
+          };
+
+          Object.keys(usersRef.current || {}).forEach((userId) => {
+            const call = peerRef.current.call(userId, stream, {
               metadata: {
-                name: userDetails?.name,
-                time: time,
+                name: userDetailsRef.current?.name,
+                time: timeRef.current,
                 screenShareId: nId,
               },
             });
@@ -251,11 +311,14 @@ const Room = () => {
             if (call) {
               setPeerCall(call);
               call.on("stream", (incomingStream) => {
-                // console.log("Incoming Stream2: ", incomingStream);
-                setUser((prev) => ({
-                  ...prev,
-                  [id]: call,
-                }));
+                setUser((prev) => {
+                  const updated = {
+                    ...prev,
+                    [nId]: call,
+                  };
+                  usersRef.current = updated;
+                  return updated;
+                });
               });
             } else {
               console.error("Call object is undefined.");
@@ -272,13 +335,35 @@ const Room = () => {
 
   const stopScreenSharing = () => {
     try {
-      const tracks = screenStream.getTracks();
-      tracks.forEach((t) => t.stop());
+      if (screenStreamRef.current) {
+        const tracks = screenStreamRef.current.getTracks();
+        tracks.forEach((t) => t.stop());
+      }
       setScreenStream(null);
+      screenStreamRef.current = null;
       setScreenSharing(false);
-      users[id]?.close();
-      socket.emit("user-leave", id, roomId);
-    } catch (error) {}
+
+      const currentScreenId = screenShareIdRef.current;
+      if (currentScreenId) {
+        if (usersRef.current && usersRef.current[currentScreenId]) {
+          try {
+            usersRef.current[currentScreenId].close();
+          } catch (e) {
+            console.error("Error closing screen share call:", e);
+          }
+          setUser((prev) => {
+            const updated = { ...prev };
+            delete updated[currentScreenId];
+            usersRef.current = updated;
+            return updated;
+          });
+        }
+        socket.emit("user-leave", currentScreenId, roomId);
+        screenShareIdRef.current = null;
+      }
+    } catch (error) {
+      console.error("Error stopping screen sharing: ", error);
+    }
   };
 
   const toggleScreenSharing = () => {

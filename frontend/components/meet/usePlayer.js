@@ -7,7 +7,7 @@ const { useState } = require("react");
 
 const usePlayer = (myPeer, peerIns) => {
   const roomId = useParams().id;
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState({});
   const router = useRouter();
   const channelDetails = channelStore((state) => state.channelDetails);
 

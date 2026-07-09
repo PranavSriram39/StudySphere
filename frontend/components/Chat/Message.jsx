@@ -30,7 +30,7 @@ const Message = ({ data, setMessages, messages }) => {
     <div className={`flex gap-1 ${justifyClass}`}>
       <div className="lg:max-w-[60%] max-w-[80%]">
         {/* message and images */}
-        <p
+        <div
           className={classNames(
             isSender
               ? "bg-nack border rounded-l-2xl rounded-br-2xl "
@@ -107,7 +107,7 @@ const Message = ({ data, setMessages, messages }) => {
               {formattedDate}
             </p>
           </div>
-        </p>
+        </div>
       </div>
 
       {isViewerOpen && (

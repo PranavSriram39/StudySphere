@@ -20,19 +20,27 @@ const Lobby = () => {
 
   useEffect(() => {
     getUserDetails();
+    let localStream = null;
     navigator.mediaDevices
       .getUserMedia({
         video: true,
         audio: true,
       })
       .then((stream) => {
+        localStream = stream;
         setMyStream(stream);
       })
       .catch((error) => {
         toast.error("Something went wrong while getting user media");
         console.log("Error : ", error);
       });
-  }, []);
+
+    return () => {
+      if (localStream) {
+        localStream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [getUserDetails]);
 
   const createAndJoin = () => {
     const newRoomId = uuidv4();

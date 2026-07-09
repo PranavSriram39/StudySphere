@@ -84,3 +84,12 @@ export const putRequestV2 = ({ url, params = "", data = {}, token }) => {
     },
   });
 };
+
+export const patchRequest = ({ url, body, token }) => {
+  return axiosDefaultInstance.patch(`${BASEURL + url}`, body, {
+    timeout: timeout,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};

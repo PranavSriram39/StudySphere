@@ -20,6 +20,18 @@ const create = async (req, res) => {
 
     if (channel) {
       const data = await Channel.findOne({ _id: channel._id });
+      const User = require("../models/userModel");
+      const user = await User.findById(req.user._id);
+      if (user) {
+        user.recentActivities.unshift({
+          title: "Created Channel",
+          description: `Created channel "#${channel.name}"`,
+          icon: "channel",
+          timestamp: new Date()
+        });
+        if (user.recentActivities.length > 15) user.recentActivities.pop();
+        await user.save();
+      }
       return data;
     }
     return null;
@@ -45,6 +57,19 @@ const join = async (req, res) => {
     await channel.populate("users", "-password");
     await channel.populate("admin_id", "-password");
     await channel.populate("org_id");
+
+    const User = require("../models/userModel");
+    const user = await User.findById(req.user._id);
+    if (user) {
+      user.recentActivities.unshift({
+        title: "Joined Channel",
+        description: `Joined channel "#${channel.name}"`,
+        icon: "channel",
+        timestamp: new Date()
+      });
+      if (user.recentActivities.length > 15) user.recentActivities.pop();
+      await user.save();
+    }
 
     return channel;
   } catch (error) {

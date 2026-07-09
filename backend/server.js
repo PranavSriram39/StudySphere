@@ -8,6 +8,7 @@ const orgRoutes = require("./routes/orgRoutes");
 const channelRoutes = require("./routes/channelRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const quizRoutes = require("./routes/quizRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
 const { errorResponse } = require("./helpers/apiResponse");
 const path = require("path");
 
@@ -24,6 +25,7 @@ app.use("/api/", orgRoutes);
 app.use("/api/", channelRoutes);
 app.use("/api/", chatRoutes);
 app.use("/api/", quizRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 const server = app.listen(port, () => {
   console.log(`Server listening on ${port}`);

@@ -51,6 +51,13 @@ const create = async (req, res) => {
       //Linking user with org
       const user = await User.findOne({ _id: req.user._id });
       user.org_joined = org.slug;
+      user.recentActivities.unshift({
+        title: "Created Organization",
+        description: `Created organization "${org.name}"`,
+        icon: "org",
+        timestamp: new Date()
+      });
+      if (user.recentActivities.length > 15) user.recentActivities.pop();
       await user.save();
 
       return data;
@@ -88,6 +95,13 @@ const join = async (req, res) => {
       //Linking user with org
       const user = await User.findOne({ _id: req.user._id });
       user.org_joined = org.slug;
+      user.recentActivities.unshift({
+        title: "Joined Organization",
+        description: `Joined organization "${org.name}"`,
+        icon: "org",
+        timestamp: new Date()
+      });
+      if (user.recentActivities.length > 15) user.recentActivities.pop();
       await user.save();
 
       const userData = await org.populate("users", "-password"); // retrieving respective users data using populate

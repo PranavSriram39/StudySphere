@@ -35,3 +35,10 @@ export const createNewQuizApi = "/create-quiz";
 export const getUserQuizzes = "/get-user-quizzes";
 export const submitQuiz = "/submit-quiz";
 export const stopQuizApi = "/stop-quiz";
+
+export const profileApi = "/profile";
+export const uploadAvatarApi = "/profile/upload-avatar";
+export const profileActivityApi = "/profile/activity";
+export const profileProgressApi = "/profile/progress";
+export const profileUpcomingApi = "/profile/upcoming";
+export const profileLeaderboardAnalyticsApi = "/profile/leaderboard-analytics";

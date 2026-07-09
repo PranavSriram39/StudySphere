@@ -1,26 +1,28 @@
-import google.generativeai as genai
 import os
+from openai import OpenAI
 from dotenv import load_dotenv
 
 load_dotenv()
 
-api_key = os.getenv("GEMINI_API_KEY")
+api_key = os.getenv("Groq_API_KEY") or os.getenv("GROQ_API_KEY") or os.getenv("XAI_API_KEY")
 
 if not api_key:
-    print("❌ Error: GEMINI_API_KEY is missing from .env file")
+    print("[ERROR] Groq_API_KEY / GROQ_API_KEY / XAI_API_KEY is missing from .env file")
 else:
-    genai.configure(api_key=api_key)
-    print(f"✅ Key found: {api_key[:5]}...*****")
-    print("🔍 Listing available models for this key...")
+    api_key = api_key.strip().strip('"').strip("'")
+    print(f"Key found: {api_key[:5]}...*****")
+    print("Testing connection to Groq API...")
     
     try:
-        found_any = False
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                print(f"   👉 {m.name}")
-                found_any = True
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.groq.com/openai/v1"
+        )
         
-        if not found_any:
-            print("⚠️ No content generation models found. Check your API Key permissions.")
+        models = client.models.list()
+        print("Models list retrieval successful!")
+        for m in models.data:
+            print(f" - {m.id}")
+            
     except Exception as e:
-        print(f"❌ Error listing models: {e}")
+        print(f"Error communicating with Groq: {e}")

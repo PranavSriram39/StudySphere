@@ -106,10 +106,11 @@ const StudentAllQuiz = ({ quizData, org = false }) => {
             <select
               name=""
               id=""
+              defaultValue="assigned"
               className="bg-transparent border rounded-md px-4 text-gray-500"
               onChange={(e) => setSelectValue(e.target.value)}
             >
-              <option value="assigned" selected>
+              <option value="assigned">
                 Assigned
               </option>
               <option value="done">Done</option>

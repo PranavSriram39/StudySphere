@@ -22,7 +22,13 @@ export default async function getQuizDetailData(context) {
     const data = response.data.data;
     if (response.status) {
       quiz = JSON.parse(data?.quiz[0].quiz);
-      quizData = data?.quiz[0];
+      quizData = {
+        ...data?.quiz[0],
+        isOrgCreator: data.isOrgCreator,
+        isChannelCreator: data.isChannelCreator,
+        isQuizCreator: data.isQuizCreator,
+        submissions: data.submissions
+      };
     }
   } catch (error) {
     console.log(error);
