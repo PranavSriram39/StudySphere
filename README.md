@@ -74,7 +74,7 @@ Standard remote meeting software lacks built-in tools for tracking academic prog
 - Groq Llama-3.3 pipeline for strict JSON MCQ specifications.
 
 ### Assessments
-- Professional Cisco-style assessment dashboard.
+- Professional assessment dashboard.
 - Live timed environment with flag-for-review capabilities.
 
 ### Leaderboards
