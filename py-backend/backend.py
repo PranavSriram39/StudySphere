@@ -2,8 +2,18 @@ import os
 import json
 import re
 import datetime
+import time
+import logging
 import PyPDF2
 from openai import OpenAI
+
+# Configure structured logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger(__name__)
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -146,7 +156,7 @@ class GroqQuizGenerator:
         self.total_marks = self.num_questions
 
     def regenerate_question(self, q, client):
-        print(f"[REPAIR] Regenerating invalid question: {q.get('question', '')[:50]}...")
+        logger.info(f"[REPAIR] Regenerating invalid question: {q.get('question', '')[:50]}...")
         prompt = f"""
         Generate a single replacement multiple choice question from the text:
         {self.text}
@@ -194,7 +204,7 @@ class GroqQuizGenerator:
             return new_q
 
         except Exception as e:
-            print(f"[ERROR] Question regeneration failed: {e}. Returning original.")
+            logger.error(f"Question regeneration failed: {e}. Returning original.")
             return q
 
     def generate_quiz(self):
@@ -274,7 +284,7 @@ class GroqQuizGenerator:
                             {"role": "user", "content": prompt}
                         ],
                         temperature=0.2,
-                        timeout=30.0
+                        timeout=90.0
                     )
                     break
                 except Exception as api_err:
@@ -284,15 +294,15 @@ class GroqQuizGenerator:
                         attempt += 1
                         if attempt >= max_retries:
                             raise ValueError(f"Failed to communicate with Groq API after {max_retries} attempts: {api_err}")
-                        print(f"[RETRY] Groq API attempt {attempt} failed: {api_err}. Retrying in {base_delay}s...")
+                        logger.info(f"Groq API attempt {attempt} failed: {api_err}. Retrying in {base_delay}s...")
                         time.sleep(base_delay)
                         base_delay *= 2
                     else:
-                        print(f"[ERROR] Groq API Error: {api_err}")
+                        logger.error(f"Groq API Error: {api_err}")
                         raise ValueError(f"Failed to communicate with Groq API: {api_err}")
 
             raw = response.choices[0].message.content.strip()
-            print("Groq Raw Response:", raw[:200], "...")
+            logger.info(f"Groq Raw Response received (Length: {len(raw)} chars)")
             
             clean_raw = repair_json_string(raw)
             try:
@@ -387,11 +397,11 @@ class GroqQuizGenerator:
         try:
             return make_api_call()
         except Exception as e:
-            print(f"[WARNING] First quiz generation attempt failed: {e}. Retrying once...")
+            logger.warning(f"First quiz generation attempt failed: {e}. Retrying once...")
             try:
                 return make_api_call()
             except Exception as retry_err:
-                print(f"[ERROR] Second attempt failed: {retry_err}")
+                logger.error(f"Second attempt failed: {retry_err}")
                 raise retry_err
 
 # --------------------------------------------------
@@ -403,7 +413,9 @@ def home():
 
 @app.route("/generate-quiz", methods=["POST"])
 def generate_quiz_from_pdf():
-    print("Request received")
+    req_id = request.headers.get("X-Request-Id", "UNKNOWN")
+    logger.info(f"[REQ {req_id}] Incoming request to /generate-quiz")
+    start_time = time.time()
     timestamp = datetime.datetime.now().isoformat()
 
     # Verify key first
@@ -434,8 +446,9 @@ def generate_quiz_from_pdf():
     try:
         reader = PyPDF2.PdfReader(pdf_file)
         text = "".join(page.extract_text() or "" for page in reader.pages)
-        print("Extracted text length:", len(text))
+        logger.info(f"[REQ {req_id}] PDF extracted: {len(reader.pages)} pages, {len(text)} characters")
     except Exception as e:
+        logger.error(f"[REQ {req_id}] PDF extraction failed: {e}")
         return jsonify({
             "success": False,
             "message": "Unable to extract readable text from PDF.",
@@ -454,6 +467,8 @@ def generate_quiz_from_pdf():
     try:
         generator = GroqQuizGenerator(text, num_questions, difficulty, title, duration)
         quiz = generator.generate_quiz()
+        duration_ms = int((time.time() - start_time) * 1000)
+        logger.info(f"[REQ {req_id}] Quiz generated successfully in {duration_ms}ms")
         return jsonify({
             "success": True,
             "message": "Quiz generated successfully",
@@ -461,7 +476,7 @@ def generate_quiz_from_pdf():
             "timestamp": timestamp
         })
     except ValueError as val_err:
-        print("VAL ERROR:", val_err)
+        logger.error(f"[REQ {req_id}] Quiz validation failed: {val_err}")
         return jsonify({
             "success": False,
             "message": "Quiz validation failed",
@@ -470,7 +485,7 @@ def generate_quiz_from_pdf():
             "timestamp": timestamp
         }), 500
     except Exception as e:
-        print("FINAL ERROR:", e)
+        logger.error(f"[REQ {req_id}] Unexpected error: {e}", exc_info=True)
         return jsonify({
             "success": False,
             "message": "Failed to generate quiz due to an unexpected error",
@@ -481,5 +496,5 @@ def generate_quiz_from_pdf():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    print(f"Server running on port {port}")
+    logger.info(f"Server starting on port {port}")
     app.run(host="0.0.0.0", port=port)

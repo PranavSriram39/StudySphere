@@ -17,6 +17,8 @@ const NewQuiz = ({ setCreatePage }) => {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("General");
   const [loading, setLoading] = useState(false);
+  const [statusText, setStatusText] = useState("");
+  const [uploadTimeouts, setUploadTimeouts] = useState([]);
 
   const [questionOption, setQuestionOption] = useState("10");
   const [numQuestions, setNumQuestions] = useState(10);
@@ -66,6 +68,7 @@ const NewQuiz = ({ setCreatePage }) => {
 
     try {
       setLoading(true);
+      setStatusText("Uploading PDF...");
 
       const formData = new FormData();
       formData.append("file", file);
@@ -90,10 +93,28 @@ const NewQuiz = ({ setCreatePage }) => {
                 Authorization: `Bearer ${getCookie("token")}`,
               },
               signal: abortControllerRef.current.signal,
+              onUploadProgress: (progressEvent) => {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                if (percentCompleted === 100 && statusText === "Uploading PDF...") {
+                  setStatusText("Extracting content...");
+                  
+                  const t1 = setTimeout(() => {
+                    if (abortControllerRef.current) setStatusText("Generating AI quiz...");
+                  }, 2000);
+                  
+                  const t2 = setTimeout(() => {
+                    if (abortControllerRef.current) setStatusText("Validating questions...");
+                  }, 15000);
+                  
+                  setUploadTimeouts([t1, t2]);
+                }
+              }
             }
           );
           
           if (response.data?.success) {
+            setStatusText("Completed.");
+            await delay(300);
             setQuiz(response.data.quiz);
             return;
           } else {
@@ -129,12 +150,15 @@ const NewQuiz = ({ setCreatePage }) => {
       let errMsg = error?.response?.data?.message || error?.response?.data?.details || error.message || "Failed to generate quiz.";
       
       if (status === 429 || (status >= 500 && status < 600)) {
-        errMsg = "AI service is temporarily busy. Please try again in a few moments.";
+        errMsg = "AI service is currently busy. Please try again in a few moments.";
       }
       
       toast.error(errMsg);
     } finally {
+      uploadTimeouts.forEach(clearTimeout);
+      setUploadTimeouts([]);
       setLoading(false);
+      setStatusText("");
       abortControllerRef.current = null;
     }
   };
@@ -393,9 +417,16 @@ const NewQuiz = ({ setCreatePage }) => {
           <button
             onClick={generateQuiz}
             disabled={loading}
-            className="bg-blue-500 text-white rounded-md px-4 py-2 w-fit self-end"
+            className={`text-white rounded-md px-4 py-2 w-fit self-end transition-all ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"}`}
           >
-            {loading ? "Generating..." : "Create new Quiz"}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                {statusText || "Generating..."}
+              </span>
+            ) : (
+              "Create new Quiz"
+            )}
           </button>
         </>
       ) : (
@@ -439,11 +470,13 @@ const DisplayQuiz = ({
   randomizeOptions,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [savingStatus, setSavingStatus] = useState("");
   const questionsList = Array.isArray(quiz) ? quiz : (quiz?.questions || []);
   
   const createQuiz = async () => {
     try {
       setIsLoading(true);
+      setSavingStatus("Saving quiz...");
       const urlParams = new URLSearchParams(window.location.search);
 
       let startDateTime;
@@ -486,12 +519,15 @@ const DisplayQuiz = ({
         token: getCookie("token"),
       });
 
+      setSavingStatus("Completed.");
+      await new Promise(r => setTimeout(r, 500));
       window.location.reload();
     } catch (error) {
       toast.error("Something went wrong!!");
       console.error(error);
     } finally {
       setIsLoading(false);
+      setSavingStatus("");
     }
   };
 
@@ -516,9 +552,17 @@ const DisplayQuiz = ({
       <div className="flex justify-end">
         <button
           onClick={createQuiz}
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-md px-6 py-2.5 mt-6 font-bold shadow-lg transition"
+          disabled={isLoading}
+          className={`text-white rounded-md px-6 py-2.5 mt-6 font-bold shadow-lg transition-all ${isLoading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
         >
-          {isLoading ? "Saving..." : "Create new Quiz"}
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+              {savingStatus || "Saving..."}
+            </span>
+          ) : (
+            "Create new Quiz"
+          )}
         </button>
       </div>
 

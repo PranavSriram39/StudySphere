@@ -238,6 +238,7 @@ const stopQuiz = asyncHandler(async (req, res) => {
 
 const generateQuizAI = asyncHandler(async (req, res) => {
   const requestId = req.id || Math.random().toString(36).substring(7);
+  console.log(`[REQ ${requestId}] Incoming request to /generate-quiz`);
   
   try {
     if (!req.file) {
@@ -280,14 +281,22 @@ const generateQuizAI = asyncHandler(async (req, res) => {
         : "http://localhost:10000/generate-quiz"
     );
 
+    console.log(`[REQ ${requestId}] PDF size: ${req.file.size} bytes, Title: ${req.body.title || "Quiz"}`);
+    console.log(`[REQ ${requestId}] Forwarding request to Python backend at: ${pyBackendUrl}`);
+
+    const startTime = Date.now();
+
     const response = await axios.post(pyBackendUrl, form, {
       headers: {
         ...form.getHeaders(),
       },
       maxContentLength: Infinity,
       maxBodyLength: Infinity,
-      timeout: 90000, // 90 seconds timeout for large PDFs
+      timeout: 120000, // 120 seconds timeout for large PDFs
     });
+
+    const durationTime = Date.now() - startTime;
+    console.log(`[REQ ${requestId}] Python backend response received in ${durationTime}ms`);
 
     return res.status(200).send({
       success: true,
@@ -298,7 +307,13 @@ const generateQuizAI = asyncHandler(async (req, res) => {
     });
 
   } catch (error) {
-    console.error("[ERROR] generateQuizAI failed:", error.message);
+    console.error(`[REQ ${requestId}] [ERROR] generateQuizAI failed:`, error.message);
+    if (error.response) {
+      console.error(`[REQ ${requestId}] Error Response Data:`, JSON.stringify(error.response.data));
+    } else if (error.request) {
+      console.error(`[REQ ${requestId}] No response received from Python backend (Timeout or network error)`);
+    }
+
     const status = error.response?.status || 500;
     const errorMessage = error.response?.data?.error || error.response?.data?.message || "Unable to generate quiz";
     const errorCode = error.response?.data?.errorCode || "AI_GENERATION_FAILED";
