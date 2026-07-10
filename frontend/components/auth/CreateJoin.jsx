@@ -12,9 +12,9 @@ const CreateJoin = () => {
   const [joinPopup, setJoinPopup] = useState(false);
   return (
     <div
-      className="bg-cover bg-center min-h-screen
+      className="bg-cover bg-center h-screen overflow-y-auto
                     bg-login                    
-                    xl:bg-[url('../public/Assets/Images/createbg.jpeg')] flex flex-col justify-center items-center xl:bg-no-repeat"
+                    xl:bg-[url('../public/Assets/Images/createbg.jpeg')] flex flex-col items-center xl:bg-no-repeat py-8"
     >
       <p className="font-bold text-4xl mt-16 py-7 px-7 text-center bg-gradient-to-r from-blue-400 to-violet-600 text-transparent bg-clip-text">
         {MainLabel}

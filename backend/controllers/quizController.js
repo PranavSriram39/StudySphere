@@ -239,30 +239,28 @@ const stopQuiz = asyncHandler(async (req, res) => {
 const generateQuizAI = asyncHandler(async (req, res) => {
   const requestId = req.id || Math.random().toString(36).substring(7);
   
-  if (!req.file) {
-    return res.status(400).send({
-      success: false,
-      message: "No PDF uploaded",
-      errorCode: "NO_FILE",
-      details: "Please select a valid PDF file to upload.",
-      timestamp: new Date().toISOString(),
-      requestId
-    });
-  }
-
-  const isPdf = req.file.mimetype === "application/pdf" || req.file.originalname.toLowerCase().endsWith(".pdf");
-  if (!isPdf) {
-    return res.status(400).send({
-      success: false,
-      message: "Invalid PDF format",
-      errorCode: "INVALID_FORMAT",
-      details: "Uploaded file must be a PDF.",
-      timestamp: new Date().toISOString(),
-      requestId
-    });
-  }
-
   try {
+    if (!req.file) {
+      return res.status(400).send({
+        success: false,
+        message: "No PDF uploaded",
+        errorCode: "NO_FILE",
+        timestamp: new Date().toISOString(),
+        requestId
+      });
+    }
+
+    const isPdf = req.file.mimetype === "application/pdf" || req.file.originalname?.toLowerCase().endsWith(".pdf");
+    if (!isPdf) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid PDF format",
+        errorCode: "INVALID_FORMAT",
+        timestamp: new Date().toISOString(),
+        requestId
+      });
+    }
+
     const FormData = require("form-data");
     const axios = require("axios");
 
@@ -282,13 +280,6 @@ const generateQuizAI = asyncHandler(async (req, res) => {
         : "http://localhost:10000/generate-quiz"
     );
 
-    if (process.env.NODE_ENV !== "production") {
-      console.log(`[DEVELOPMENT] Incoming request to generate quiz. Title: ${req.body.title}, Qs: ${req.body.num_questions}`);
-      console.log(`[DEVELOPMENT] PDF size: ${req.file.size} bytes`);
-      console.log(`[DEVELOPMENT] Forwarding request to Python backend at: ${pyBackendUrl}`);
-    }
-
-    const startTime = Date.now();
     const response = await axios.post(pyBackendUrl, form, {
       headers: {
         ...form.getHeaders(),
@@ -297,12 +288,6 @@ const generateQuizAI = asyncHandler(async (req, res) => {
       maxBodyLength: Infinity,
       timeout: 90000, // 90 seconds timeout for large PDFs
     });
-    const durationTime = Date.now() - startTime;
-
-    if (process.env.NODE_ENV !== "production") {
-      console.log(`[DEVELOPMENT] Groq response time: ${durationTime}ms`);
-      console.log(`[DEVELOPMENT] Questions generated: ${response.data.quiz?.questions?.length || 0}`);
-    }
 
     return res.status(200).send({
       success: true,
@@ -313,17 +298,15 @@ const generateQuizAI = asyncHandler(async (req, res) => {
     });
 
   } catch (error) {
-    console.error("[ERROR] Failed to communicate with Python backend:", error.message);
+    console.error("[ERROR] generateQuizAI failed:", error.message);
     const status = error.response?.status || 500;
-    const errorMessage = error.response?.data?.error || error.response?.data?.message || "Failed to generate quiz. Check server logs.";
-    const errorCode = error.response?.data?.errorCode || "PYTHON_BACKEND_FAILED";
-    const details = error.response?.data?.details || error.message;
+    const errorMessage = error.response?.data?.error || error.response?.data?.message || "Unable to generate quiz";
+    const errorCode = error.response?.data?.errorCode || "AI_GENERATION_FAILED";
 
     return res.status(status).send({
       success: false,
       message: errorMessage,
       errorCode,
-      details,
       timestamp: new Date().toISOString(),
       requestId
     });

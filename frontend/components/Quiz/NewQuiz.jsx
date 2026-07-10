@@ -39,6 +39,10 @@ const NewQuiz = ({ setCreatePage }) => {
     setFile(event.target.files[0]);
   };
 
+  const abortControllerRef = React.useRef(null);
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
   const generateQuiz = async () => {
     if (!title) {
       toast.error("Please enter a title");
@@ -50,6 +54,16 @@ const NewQuiz = ({ setCreatePage }) => {
       return;
     }
 
+    if (loading) {
+      return; // Prevent duplicate requests
+    }
+
+    // Abort previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    abortControllerRef.current = new AbortController();
+
     try {
       setLoading(true);
 
@@ -60,29 +74,68 @@ const NewQuiz = ({ setCreatePage }) => {
       formData.append("difficulty", difficulty);
       formData.append("duration", duration.toString());
 
-      const response = await axios.post(
-        `${ApiUrl}/generate-quiz`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${getCookie("token")}`,
-          },
-        }
-      );
+      let response;
+      let attempt = 0;
+      const maxAttempts = 4; // Initial + 3 retries
+      const baseDelay = 2000;
 
-      if (response.data?.success) {
-        setQuiz(response.data.quiz);
-      } else {
-        throw new Error(response.data?.message || "Failed to generate quiz");
+      while (attempt < maxAttempts) {
+        try {
+          response = await axios.post(
+            `${ApiUrl}/generate-quiz`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${getCookie("token")}`,
+              },
+              signal: abortControllerRef.current.signal,
+            }
+          );
+          
+          if (response.data?.success) {
+            setQuiz(response.data.quiz);
+            return;
+          } else {
+            throw new Error(response.data?.message || "Failed to generate quiz");
+          }
+        } catch (error) {
+          if (axios.isCancel(error)) {
+            console.log("Request canceled");
+            return;
+          }
+          
+          const status = error?.response?.status;
+          
+          // Only retry on 429 or 5xx
+          if (status === 429 || (status >= 500 && status < 600)) {
+            attempt++;
+            if (attempt >= maxAttempts) {
+              throw error;
+            }
+            const waitTime = baseDelay * Math.pow(2, attempt - 1); // 2s, 4s, 8s
+            console.warn(`[RETRY] Attempt ${attempt} failed with status ${status}. Retrying in ${waitTime}ms...`);
+            await delay(waitTime);
+          } else {
+            throw error;
+          }
+        }
       }
 
     } catch (error) {
+      if (axios.isCancel(error)) return;
       console.error(error);
-      const errMsg = error?.response?.data?.message || error?.response?.data?.details || error.message || "Failed to generate quiz.";
+      const status = error?.response?.status;
+      let errMsg = error?.response?.data?.message || error?.response?.data?.details || error.message || "Failed to generate quiz.";
+      
+      if (status === 429 || (status >= 500 && status < 600)) {
+        errMsg = "AI service is temporarily busy. Please try again in a few moments.";
+      }
+      
       toast.error(errMsg);
     } finally {
       setLoading(false);
+      abortControllerRef.current = null;
     }
   };
 

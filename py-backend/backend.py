@@ -17,9 +17,10 @@ def repair_json_string(raw_str):
     
     raw_str = raw_str.strip()
     if "```json" in raw_str:
-        raw_str = raw_str.replace("```json", "").replace("```", "")
-    elif "```" in raw_str:
-        raw_str = raw_str.replace("```", "")
+        raw_str = raw_str.split("```json")[-1]
+    if "```" in raw_str:
+        raw_str = raw_str.split("```")[0]
+        
     raw_str = raw_str.strip()
     
     start = raw_str.find("{")
@@ -126,7 +127,9 @@ def repair_duplicate_options(q):
 # --------------------------------------------------
 class GroqQuizGenerator:
     def __init__(self, text, num_questions, difficulty, title, duration):
-        self.text = text[:15000]
+        cleaned_text = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', text)
+        cleaned_text = re.sub(r'\s+', ' ', cleaned_text).strip()
+        self.text = cleaned_text[:15000]
         try:
             self.num_questions = int(num_questions)
         except ValueError:
@@ -257,20 +260,36 @@ class GroqQuizGenerator:
             "}"
         )
 
-        def make_api_call():
-            try:
-                response = client.chat.completions.create(
-                    model="llama-3.3-70b-versatile",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": prompt}
-                    ],
-                    temperature=0.2,
-                    timeout=30.0
-                )
-            except Exception as conn_err:
-                print(f"[ERROR] Groq API Connection/Timeout Error: {conn_err}")
-                raise ValueError(f"Failed to communicate with Groq API: {conn_err}")
+        def make_api_call(max_retries=3):
+            import time
+            attempt = 0
+            base_delay = 2
+            
+            while attempt < max_retries:
+                try:
+                    response = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.2,
+                        timeout=30.0
+                    )
+                    break
+                except Exception as api_err:
+                    err_msg = str(api_err).lower()
+                    # Retry on rate limit (429) or server errors (5xx)
+                    if "429" in err_msg or "too many requests" in err_msg or "500" in err_msg or "503" in err_msg or "502" in err_msg or "504" in err_msg or "timeout" in err_msg:
+                        attempt += 1
+                        if attempt >= max_retries:
+                            raise ValueError(f"Failed to communicate with Groq API after {max_retries} attempts: {api_err}")
+                        print(f"[RETRY] Groq API attempt {attempt} failed: {api_err}. Retrying in {base_delay}s...")
+                        time.sleep(base_delay)
+                        base_delay *= 2
+                    else:
+                        print(f"[ERROR] Groq API Error: {api_err}")
+                        raise ValueError(f"Failed to communicate with Groq API: {api_err}")
 
             raw = response.choices[0].message.content.strip()
             print("Groq Raw Response:", raw[:200], "...")
@@ -419,18 +438,16 @@ def generate_quiz_from_pdf():
     except Exception as e:
         return jsonify({
             "success": False,
-            "message": "Invalid PDF format",
-            "errorCode": "INVALID_PDF",
-            "details": str(e),
+            "message": "Unable to extract readable text from PDF.",
+            "errorCode": "PDF_EXTRACTION_FAILED",
             "timestamp": timestamp
         }), 400
 
     if len(text.strip()) < 100:
         return jsonify({
             "success": False,
-            "message": "Uploaded PDF contains no readable text",
-            "errorCode": "SCANNED_PDF",
-            "details": "PyPDF2 extracted almost no text (scanned, image-only, or empty PDF). Please upload a vector/text PDF.",
+            "message": "Unable to extract readable text from PDF.",
+            "errorCode": "PDF_EXTRACTION_FAILED",
             "timestamp": timestamp
         }), 400
 
