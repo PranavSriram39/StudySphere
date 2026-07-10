@@ -45,7 +45,7 @@ Standard remote meeting software lacks built-in tools for tracking academic prog
 ## 🚀 Project Highlights
 
 - **🤖 AI-powered quiz generation:** Convert PDFs into quizzes instantly using Llama-3.3.
-- **📝 Cisco-style assessments:** Professional exam environments.
+- **📝 Assessments:** Professional exam environments.
 - **🤝 Real-time collaboration:** Chat and collaborate instantly.
 - **🎥 WebRTC meetings:** Peer-to-peer video calls and screen sharing.
 - **🔐 Role-based access:** Strict access control for admins, teachers, and students.
